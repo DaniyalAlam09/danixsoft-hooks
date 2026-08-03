@@ -1,0 +1,57 @@
+import { useState, useCallback } from 'react';
+
+interface UseStepActions {
+  goToNextStep: () => void;
+  goToPrevStep: () => void;
+  reset: () => void;
+  canGoToNextStep: boolean;
+  canGoToPrevStep: boolean;
+  setStep: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export function useStep(maxStep: number): [number, UseStepActions] {
+  const [currentStep, setCurrentStep] = useState(1);
+
+  const canGoToNextStep = currentStep < maxStep;
+  const canGoToPrevStep = currentStep > 1;
+
+  const setStep = useCallback(
+    (step: number | ((step: number) => number)) => {
+      const newStep = step instanceof Function ? step(currentStep) : step;
+      if (newStep >= 1 && newStep <= maxStep) {
+        setCurrentStep(newStep);
+        return;
+      }
+      throw new Error('Step not valid');
+    },
+    [maxStep, currentStep]
+  );
+
+  const goToNextStep = useCallback(() => {
+    if (canGoToNextStep) {
+      setCurrentStep(step => step + 1);
+    }
+  }, [canGoToNextStep]);
+
+  const goToPrevStep = useCallback(() => {
+    if (canGoToPrevStep) {
+      setCurrentStep(step => step - 1);
+    }
+  }, [canGoToPrevStep]);
+
+  const reset = useCallback(() => {
+    setCurrentStep(1);
+  }, []);
+
+  return [
+    currentStep,
+    {
+      goToNextStep,
+      goToPrevStep,
+      canGoToNextStep,
+      canGoToPrevStep,
+      setStep,
+      reset,
+    },
+  ];
+}

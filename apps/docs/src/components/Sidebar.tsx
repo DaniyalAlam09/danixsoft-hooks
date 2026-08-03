@@ -25,10 +25,16 @@ export default function Sidebar() {
         <Link href="/" className={getLinkClass('/')}>Getting Started</Link>
         
         <div className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3 mt-6">State & Storage</div>
+        <Link href="/use-boolean" className={getLinkClass('/use-boolean')}>useBoolean</Link>
+        <Link href="/use-counter" className={getLinkClass('/use-counter')}>useCounter</Link>
+        <Link href="/use-map" className={getLinkClass('/use-map')}>useMap</Link>
         <Link href="/use-local-storage" className={getLinkClass('/use-local-storage')}>useLocalStorage</Link>
+        <Link href="/use-session-storage" className={getLinkClass('/use-session-storage')}>useSessionStorage</Link>
+        <Link href="/use-cookie" className={getLinkClass('/use-cookie')}>useCookie</Link>
         <Link href="/use-debounce" className={getLinkClass('/use-debounce')}>useDebounce</Link>
         <Link href="/use-toggle" className={getLinkClass('/use-toggle')}>useToggle</Link>
         <Link href="/use-previous" className={getLinkClass('/use-previous')}>usePrevious</Link>
+        <Link href="/use-step" className={getLinkClass('/use-step')}>useStep</Link>
         
         <div className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3 mt-6">Forms & Data</div>
         <Link href="/use-form" className={getLinkClass('/use-form')}>useForm</Link>
@@ -38,9 +44,35 @@ export default function Sidebar() {
         
         <div className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3 mt-6">DOM & Browser</div>
         <Link href="/use-click-outside" className={getLinkClass('/use-click-outside')}>useClickOutside</Link>
+        <Link href="/use-click-any-where" className={getLinkClass('/use-click-any-where')}>useClickAnyWhere</Link>
         <Link href="/use-media-query" className={getLinkClass('/use-media-query')}>useMediaQuery</Link>
         <Link href="/use-on-screen" className={getLinkClass('/use-on-screen')}>useOnScreen</Link>
+        <Link href="/use-intersection-observer" className={getLinkClass('/use-intersection-observer')}>useIntersectionObserver</Link>
         <Link href="/use-window-size" className={getLinkClass('/use-window-size')}>useWindowSize</Link>
+        <Link href="/use-window-scroll" className={getLinkClass('/use-window-scroll')}>useWindowScroll</Link>
+        <Link href="/use-document-title" className={getLinkClass('/use-document-title')}>useDocumentTitle</Link>
+        <Link href="/use-event-listener" className={getLinkClass('/use-event-listener')}>useEventListener</Link>
+        <Link href="/use-hover" className={getLinkClass('/use-hover')}>useHover</Link>
+        <Link href="/use-screen" className={getLinkClass('/use-screen')}>useScreen</Link>
+        
+        <div className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3 mt-6">Timers & Lifecycle</div>
+        <Link href="/use-interval" className={getLinkClass('/use-interval')}>useInterval</Link>
+        <Link href="/use-timeout" className={getLinkClass('/use-timeout')}>useTimeout</Link>
+        <Link href="/use-countdown" className={getLinkClass('/use-countdown')}>useCountdown</Link>
+        <Link href="/use-is-mounted" className={getLinkClass('/use-is-mounted')}>useIsMounted</Link>
+        <Link href="/use-is-client" className={getLinkClass('/use-is-client')}>useIsClient</Link>
+        <Link href="/use-unmount" className={getLinkClass('/use-unmount')}>useUnmount</Link>
+        <Link href="/use-update-effect" className={getLinkClass('/use-update-effect')}>useUpdateEffect</Link>
+
+        <div className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3 mt-6">Advanced Sensors</div>
+        <Link href="/use-copy-to-clipboard" className={getLinkClass('/use-copy-to-clipboard')}>useCopyToClipboard</Link>
+        <Link href="/use-online-state" className={getLinkClass('/use-online-state')}>useOnlineState</Link>
+        <Link href="/use-geolocation" className={getLinkClass('/use-geolocation')}>useGeolocation</Link>
+        <Link href="/use-audio" className={getLinkClass('/use-audio')}>useAudio</Link>
+        <Link href="/use-mouse" className={getLinkClass('/use-mouse')}>useMouse</Link>
+        <Link href="/use-touch" className={getLinkClass('/use-touch')}>useTouch</Link>
+        <Link href="/use-swipe" className={getLinkClass('/use-swipe')}>useSwipe</Link>
+        <Link href="/use-scroll-lock" className={getLinkClass('/use-scroll-lock')}>useScrollLock</Link>
       </nav>
     </aside>
   );

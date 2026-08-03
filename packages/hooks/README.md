@@ -1,18 +1,26 @@
-# @danixsoft/hooks 🚀
+<div align="center">
+  <h1>@danixsoft/hooks</h1>
+  <p><strong>The ultimate collection of 32+ beautiful, robust, and zero-dependency React hooks.</strong></p>
+  
+  [![NPM Version](https://img.shields.io/npm/v/@danixsoft/hooks.svg?style=flat-square&color=blue)](https://www.npmjs.com/package/@danixsoft/hooks)
+  [![NPM Downloads](https://img.shields.io/npm/dt/@danixsoft/hooks.svg?style=flat-square)](https://www.npmjs.com/package/@danixsoft/hooks)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
+</div>
 
-[![NPM Version](https://img.shields.io/npm/v/@danixsoft/hooks.svg?style=flat-square&color=blue)](https://www.npmjs.com/package/@danixsoft/hooks)
-[![NPM Downloads](https://img.shields.io/npm/dt/@danixsoft/hooks.svg?style=flat-square)](https://www.npmjs.com/package/@danixsoft/hooks)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+<br />
 
-**A collection of beautiful, robust, and dependency-free React hooks.**
+📖 **[Read the Official Documentation & Interactive Demos](https://danixsoft-hooks-docs.vercel.app/)**
 
-Stop copying and pasting the same utility functions across projects. Get instant access to a battle-tested library of essential hooks.
+Stop copying and pasting the same utility functions across projects. Get instant access to a battle-tested library of essential, high-performance React hooks designed for modern web applications. Fully compatible with Next.js, Remix, Vite, and standard React setups.
 
 ## 🌟 Key Features
+
 * **🌳 Tree-shakeable:** Import only what you need. Your final bundle size remains microscopic.
 * **🛡️ TypeScript First:** Written entirely in TypeScript. Enjoy full autocomplete and type safety.
 * **🪶 Zero Dependencies:** We don't rely on any third-party libraries. Built entirely on React primitives.
-* **🚀 SSR Compatible:** Works flawlessly with Next.js and Remix Server-Side Rendering.
+* **🚀 SSR Compatible:** Works flawlessly with Next.js and Remix Server-Side Rendering (no `window is not defined` errors).
+* **⚡ Highly Optimized:** Uses `useRef` callbacks to prevent stale closures and unnecessary re-renders.
 
 ## 📦 Installation
 
@@ -38,14 +46,16 @@ pnpm add @danixsoft/hooks
 Every hook is exported from the main package. Simply import them by name.
 
 ```tsx
-import { useToggle, useLocalStorage } from '@danixsoft/hooks';
+import { useToggle, useLocalStorage, useWindowSize } from '@danixsoft/hooks';
 
 function App() {
   const [isOpen, toggle] = useToggle(false);
   const [theme, setTheme] = useLocalStorage('theme', 'dark');
+  const { width } = useWindowSize();
 
   return (
     <div>
+      <p>Window width: {width}px</p>
       <button onClick={toggle}>
         {isOpen ? 'Close' : 'Open'}
       </button>
@@ -54,20 +64,63 @@ function App() {
 }
 ```
 
-## 📚 Available Hooks
+## 📚 32+ Available Hooks
 
+We have carefully categorized our hooks for maximum developer experience.
+
+### State & Storage
+* `useBoolean` - Robust boolean state manager with absolute setters.
+* `useCounter` - Number counter with bounds and step increments.
+* `useMap` - React-friendly wrapper for native Map.
 * `useLocalStorage` - Persist state to `window.localStorage`.
+* `useSessionStorage` - Persist state to `window.sessionStorage`.
+* `useCookie` - Read and update browser cookies.
 * `useDebounce` - Delay the execution of state updates.
 * `useToggle` - A simple boolean state toggler.
 * `usePrevious` - Store the previous state or prop value.
+* `useStep` - Manage wizard/multi-step flows easily.
+
+### Forms & Data
 * `useForm` - Lightweight form state and validation manager.
 * `usePagination` - Client-side array pagination logic.
-* `useInfiniteScroll` - Easily implement infinite scrolling with an intersection observer.
-* `useFetch` - A simple hook for fetching API data with loading and error states.
+* `useInfiniteScroll` - Easily implement infinite scrolling.
+* `useFetch` - Fetch API data with loading and error states.
+
+### DOM & Browser
 * `useClickOutside` - Detect clicks outside of a referenced component.
+* `useClickAnyWhere` - Listen for clicks anywhere on the document.
 * `useMediaQuery` - Subscribe to CSS media queries in React.
 * `useOnScreen` - Detect if an element is visible in the viewport.
+* `useIntersectionObserver` - Track elements entering or leaving the viewport.
 * `useWindowSize` - Track the dimensions of the browser window.
+* `useWindowScroll` - Track and manipulate window scroll position.
+* `useDocumentTitle` - Dynamically update the document title.
+* `useEventListener` - Safely bind event listeners to DOM elements.
+* `useHover` - Detect if a specific element is being hovered.
+* `useScreen` - Access the native Window.screen object.
+
+### Timers & Lifecycle
+* `useInterval` - Declarative setInterval for React.
+* `useTimeout` - Declarative setTimeout for React.
+* `useCountdown` - Manage countdown timers.
+* `useIsMounted` - Determine if a component is currently mounted.
+* `useIsClient` - Safely determine if code is running on the client.
+* `useUnmount` - Run code only when a component unmounts.
+* `useUpdateEffect` - Like useEffect, but ignores the first render.
+
+### Advanced Sensors
+* `useCopyToClipboard` - Copy text to the clipboard safely.
+* `useOnlineState` - Track network status of the user.
+* `useGeolocation` - Track device location via Geolocation API.
+* `useAudio` - Easily play and control audio files.
+* `useMouse` - Track mouse coordinates.
+* `useTouch` - Track multi-touch events on screens.
+* `useSwipe` - Detect directional swipe gestures.
+* `useScrollLock` - Lock scrolling on the document body.
+
+## 🤝 Contributing
+
+We welcome contributions! Please check our GitHub issues and submit a pull request.
 
 ## 📄 License
-MIT © Daniyal Alam
+MIT © DanixSoft

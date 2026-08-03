@@ -13,8 +13,26 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: '@danixsoft/hooks',
-  description: 'A collection of beautiful, dependency-free React hooks.',
+  title: '@danixsoft/hooks - The Ultimate React Hooks Library',
+  description: 'A collection of 32+ beautiful, highly-optimized, zero-dependency React hooks for Next.js and Vite. Improve your workflow with production-ready utilities.',
+  keywords: ['react', 'hooks', 'react hooks', 'nextjs', 'usehooks', 'typescript hooks', 'custom hooks', 'react 18'],
+  authors: [{ name: 'DanixSoft', url: 'https://danixsoft.com' }],
+  creator: 'DanixSoft',
+  publisher: 'DanixSoft',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://danixsoft-hooks-docs.vercel.app',
+    title: '@danixsoft/hooks - Enterprise React Hooks',
+    description: '32+ highly-optimized, SSR-safe, zero-dependency React hooks for modern applications.',
+    siteName: '@danixsoft/hooks Docs',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '@danixsoft/hooks - Enterprise React Hooks',
+    description: '32+ highly-optimized, zero-dependency React hooks.',
+    creator: '@danixsoft',
+  },
 };
 
 export default function RootLayout({

@@ -54,6 +54,8 @@ export default function Sidebar() {
         <Link href="/use-event-listener" className={getLinkClass('/use-event-listener')}>useEventListener</Link>
         <Link href="/use-hover" className={getLinkClass('/use-hover')}>useHover</Link>
         <Link href="/use-screen" className={getLinkClass('/use-screen')}>useScreen</Link>
+        <Link href="/use-mutation-observer" className={getLinkClass('/use-mutation-observer')}>useMutationObserver</Link>
+        <Link href="/use-script" className={getLinkClass('/use-script')}>useScript</Link>
         
         <div className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3 mt-6">Timers & Lifecycle</div>
         <Link href="/use-interval" className={getLinkClass('/use-interval')}>useInterval</Link>
@@ -63,6 +65,8 @@ export default function Sidebar() {
         <Link href="/use-is-client" className={getLinkClass('/use-is-client')}>useIsClient</Link>
         <Link href="/use-unmount" className={getLinkClass('/use-unmount')}>useUnmount</Link>
         <Link href="/use-update-effect" className={getLinkClass('/use-update-effect')}>useUpdateEffect</Link>
+        <Link href="/use-event" className={getLinkClass('/use-event')}>useEvent</Link>
+        <Link href="/use-isomorphic-layout-effect" className={getLinkClass('/use-isomorphic-layout-effect')}>useIsomorphicLayoutEffect</Link>
 
         <div className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3 mt-6">Advanced Sensors</div>
         <Link href="/use-copy-to-clipboard" className={getLinkClass('/use-copy-to-clipboard')}>useCopyToClipboard</Link>

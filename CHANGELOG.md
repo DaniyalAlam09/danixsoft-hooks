@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Boilerplate entries for upcoming changes.
 
+## [0.2.3] - 2026-08-12
+### Fixed
+- Fixed TypeScript ESLint errors across hooks (`useEvent`, `useForm`) and test files to ensure a green CI pipeline.
+- Fixed GitHub repository links across the `package.json` metadata, README badges, and documentation site.
+
 ## [0.2.2] - 2026-08-12
 ### Added
 - Added `LICENSE` file (MIT) to the package and repository root.

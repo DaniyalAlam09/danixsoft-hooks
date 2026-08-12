@@ -1,6 +1,6 @@
 <div align="center">
   <h1>@danixsoft/hooks</h1>
-  <p><strong>The ultimate collection of 32+ beautiful, robust, and zero-dependency React hooks.</strong></p>
+  <p><strong>The ultimate collection of 42+ beautiful, robust, and zero-dependency React hooks.</strong></p>
   
   [![NPM Version](https://img.shields.io/npm/v/@danixsoft/hooks.svg?style=flat-square&color=blue)](https://www.npmjs.com/package/@danixsoft/hooks)
   [![NPM Downloads](https://img.shields.io/npm/dt/@danixsoft/hooks.svg?style=flat-square)](https://www.npmjs.com/package/@danixsoft/hooks)
@@ -64,7 +64,7 @@ function App() {
 }
 ```
 
-## 📚 32+ Available Hooks
+## 📚 42+ Available Hooks
 
 We have carefully categorized our hooks for maximum developer experience.
 
@@ -98,6 +98,8 @@ We have carefully categorized our hooks for maximum developer experience.
 * `useEventListener` - Safely bind event listeners to DOM elements.
 * `useHover` - Detect if a specific element is being hovered.
 * `useScreen` - Access the native Window.screen object.
+* `useMutationObserver` - Observe changes to the DOM tree.
+* `useScript` - Dynamically load and inject external scripts.
 
 ### Timers & Lifecycle
 * `useInterval` - Declarative setInterval for React.
@@ -107,6 +109,8 @@ We have carefully categorized our hooks for maximum developer experience.
 * `useIsClient` - Safely determine if code is running on the client.
 * `useUnmount` - Run code only when a component unmounts.
 * `useUpdateEffect` - Like useEffect, but ignores the first render.
+* `useEvent` - Create a stable, memoized callback function.
+* `useIsomorphicLayoutEffect` - `useLayoutEffect` that does not throw warnings in SSR.
 
 ### Advanced Sensors
 * `useCopyToClipboard` - Copy text to the clipboard safely.

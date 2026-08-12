@@ -41,3 +41,4 @@ export * from './useMouse';
 export * from './useStep';
 export * from './useTouch';
 export * from './useSwipe';
+export * from './useWindowScroll';

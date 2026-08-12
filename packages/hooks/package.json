@@ -1,6 +1,6 @@
 {
   "name": "@danixsoft/hooks",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "license": "MIT",
   "description": "The ultimate open-source, tree-shakeable React hooks library. 42+ essential, zero-dependency, isomorphic React hooks for modern applications (Next.js, Vite, SSR).",
   "keywords": [
@@ -19,10 +19,10 @@
   "homepage": "https://danixsoft-hooks-docs.vercel.app",
   "repository": {
     "type": "git",
-    "url": "https://github.com/danixsoft/hooks.git"
+    "url": "https://github.com/DaniyalAlam09/danixsoft-hooks.git"
   },
   "bugs": {
-    "url": "https://github.com/danixsoft/hooks/issues"
+    "url": "https://github.com/DaniyalAlam09/danixsoft-hooks/issues"
   },
   "type": "module",
   "main": "./dist/index.cjs",

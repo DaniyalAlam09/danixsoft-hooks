@@ -3,7 +3,7 @@ import { useInfiniteScroll } from '../src/useInfiniteScroll';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 describe('useInfiniteScroll', () => {
-  let mockIntersectionObserver: any;
+  let mockIntersectionObserver: unknown;
 
   beforeEach(() => {
     mockIntersectionObserver = vi.fn(() => ({
@@ -11,7 +11,7 @@ describe('useInfiniteScroll', () => {
       unobserve: vi.fn(),
       disconnect: vi.fn(),
     }));
-    window.IntersectionObserver = mockIntersectionObserver;
+    window.IntersectionObserver = mockIntersectionObserver as unknown as typeof IntersectionObserver;
   });
 
   afterEach(() => {

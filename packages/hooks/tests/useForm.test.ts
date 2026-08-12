@@ -14,7 +14,7 @@ describe('useForm', () => {
     act(() => {
       result.current.handleChange({
         target: { name: 'name', value: 'Danix', type: 'text' },
-      } as any);
+      } as unknown as React.ChangeEvent<HTMLInputElement>);
     });
 
     expect(result.current.values.name).toBe('Danix');
@@ -27,7 +27,7 @@ describe('useForm', () => {
     );
 
     await act(async () => {
-      await result.current.handleSubmit({ preventDefault: vi.fn() } as any);
+      await result.current.handleSubmit({ preventDefault: vi.fn() } as unknown as React.FormEvent<HTMLFormElement>);
     });
 
     expect(onSubmit).toHaveBeenCalledWith({ name: 'Danix' });

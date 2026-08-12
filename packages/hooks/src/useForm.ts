@@ -6,6 +6,7 @@ export interface UseFormOptions<TValues> {
   onSubmit?: (values: TValues) => void | Promise<void>;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useForm<TValues extends Record<string, any>>({
   initialValues,
   validate,

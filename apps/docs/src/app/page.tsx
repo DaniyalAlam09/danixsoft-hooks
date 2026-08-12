@@ -35,7 +35,7 @@ function App() {
           <Link href="/use-local-storage" className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded shadow-md transition-colors text-center uppercase tracking-wider text-sm">
             Browse Hooks
           </Link>
-          <a href="https://github.com/danixsoft/hooks" target="_blank" rel="noopener noreferrer" className="px-6 py-3 bg-neutral-200 dark:bg-[#1e1e1e] hover:bg-neutral-300 dark:hover:bg-neutral-800 text-neutral-900 dark:text-white font-medium rounded shadow-sm transition-colors text-center uppercase tracking-wider text-sm flex items-center justify-center space-x-2">
+          <a href="https://github.com/DaniyalAlam09/danixsoft-hooks" target="_blank" rel="noopener noreferrer" className="px-6 py-3 bg-neutral-200 dark:bg-[#1e1e1e] hover:bg-neutral-300 dark:hover:bg-neutral-800 text-neutral-900 dark:text-white font-medium rounded shadow-sm transition-colors text-center uppercase tracking-wider text-sm flex items-center justify-center space-x-2">
              <span>GitHub Repository</span>
           </a>
         </div>

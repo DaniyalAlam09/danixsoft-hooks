@@ -4,6 +4,9 @@
   
   [![NPM Version](https://img.shields.io/npm/v/@danixsoft/hooks.svg?style=flat-square&color=blue)](https://www.npmjs.com/package/@danixsoft/hooks)
   [![NPM Downloads](https://img.shields.io/npm/dt/@danixsoft/hooks.svg?style=flat-square)](https://www.npmjs.com/package/@danixsoft/hooks)
+  [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@danixsoft/hooks?style=flat-square&label=minzipped%20size)](https://bundlephobia.com/package/@danixsoft/hooks)
+  [![Build Status](https://img.shields.io/github/actions/workflow/status/danixsoft/hooks/ci.yml?style=flat-square)](https://github.com/danixsoft/hooks/actions)
+  [![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg?style=flat-square)](#)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
   [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
 </div>
@@ -21,6 +24,16 @@ Stop copying and pasting the same utility functions across projects. Get instant
 * **🪶 Zero Dependencies:** We don't rely on any third-party libraries. Built entirely on React primitives.
 * **🚀 SSR Compatible:** Works flawlessly with Next.js and Remix Server-Side Rendering (no `window is not defined` errors).
 * **⚡ Highly Optimized:** Uses `useRef` callbacks to prevent stale closures and unnecessary re-renders.
+
+## ⚖️ Why @danixsoft/hooks?
+
+| Feature | `@danixsoft/hooks` | `usehooks-ts` | `react-use` |
+|---------|--------------------|---------------|-------------|
+| **Bundle Size (total)** | **~3.5 kB** | ~8.0 kB | ~31 kB |
+| **Dependencies** | **0** | 0 | 11 |
+| **SSR / Next.js Ready** | ✅ **Native** (no hydration mismatch) | ⚠️ Requires configuration | ⚠️ Prone to window errors |
+| **Tree-shakeable** | ✅ **100%** granular exports | ✅ Yes | ⚠️ Varies |
+| **TypeScript Type-safety**| ✅ **Strictly Typed** | ✅ Yes | ⚠️ Legacy Types |
 
 ## 📦 Installation
 
@@ -40,6 +53,9 @@ yarn add @danixsoft/hooks
 ```bash
 pnpm add @danixsoft/hooks
 ```
+
+> **Note for Next.js App Router Users:**
+> All hooks in this library interact with React state or browser APIs. When using them in the App Router, ensure you add the `"use client"` directive at the top of your file.
 
 ## 🛠️ Quick Usage
 

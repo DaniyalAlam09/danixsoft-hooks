@@ -12,7 +12,7 @@ describe('useFetch', () => {
   });
 
   it('should set loading to true initially', () => {
-    (global.fetch as any).mockImplementation(() => new Promise(() => {}));
+    (global.fetch as unknown as ReturnType<typeof vi.fn>).mockImplementation(() => new Promise(() => {}));
     
     const { result } = renderHook(() => useFetch('https://api.example.com/data'));
     expect(result.current.isLoading).toBe(true);
@@ -21,7 +21,7 @@ describe('useFetch', () => {
 
   it('should fetch data successfully', async () => {
     const mockData = { id: 1, name: 'Danix' };
-    (global.fetch as any).mockResolvedValueOnce({
+    (global.fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       ok: true,
       json: async () => mockData,
     });

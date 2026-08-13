@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Boilerplate entries for upcoming changes.
 
+## [0.2.4] - 2026-08-13
+### Added
+- Introduced automated, machine-readable `llms.txt` and `llms-full.txt` docs for AI agent discoverability.
+- Integrated automated API reference generation via `typedoc` into the documentation site.
+- Enabled Vitest test coverage and integrated Codecov reporting via GitHub Actions.
+- Added structured JSON-LD Schema and updated SEO metadata across the docs app.
+- Added `"engines": { "node": ">=18.0.0" }` to strictly declare supported Node versions.
+### Fixed
+- Fixed missing `@vitest/coverage-v8` development dependency causing CI failures.
+
 ## [0.2.3] - 2026-08-12
 ### Fixed
 - Fixed TypeScript ESLint errors across hooks (`useEvent`, `useForm`) and test files to ensure a green CI pipeline.

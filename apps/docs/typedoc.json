@@ -1,0 +1,10 @@
+{
+  "entryPoints": ["../../packages/hooks/src/index.ts"],
+  "out": "src/content/api-reference",
+  "plugin": ["typedoc-plugin-markdown"],
+  "readme": "none",
+  "disableSources": true,
+  "hideBreadcrumbs": true,
+  "hidePageTitle": true,
+  "tsconfig": "../../packages/hooks/tsconfig.json"
+}

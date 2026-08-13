@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "typedoc",
     "build": "cd ../../packages/hooks && npm run build && cd - && next build",
     "start": "next start",
     "lint": "eslint"
@@ -14,7 +15,9 @@
     "next": "16.2.12",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "react-syntax-highlighter": "^16.1.1"
+    "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^16.1.1",
+    "rehype-highlight": "^7.0.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

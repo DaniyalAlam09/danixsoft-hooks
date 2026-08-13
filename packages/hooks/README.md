@@ -6,7 +6,7 @@
   [![NPM Downloads](https://img.shields.io/npm/dt/@danixsoft/hooks.svg?style=flat-square)](https://www.npmjs.com/package/@danixsoft/hooks)
   [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@danixsoft/hooks?style=flat-square&label=minzipped%20size)](https://bundlephobia.com/package/@danixsoft/hooks)
   [![Build Status](https://img.shields.io/github/actions/workflow/status/DaniyalAlam09/danixsoft-hooks/ci.yml?style=flat-square)](https://github.com/DaniyalAlam09/danixsoft-hooks/actions)
-  [![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg?style=flat-square)](#)
+  [![codecov](https://codecov.io/gh/DaniyalAlam09/danixsoft-hooks/graph/badge.svg)](https://codecov.io/gh/DaniyalAlam09/danixsoft-hooks)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
   [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
 </div>

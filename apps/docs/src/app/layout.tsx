@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import './globals.css';
-import packageJson from '../../../packages/hooks/package.json';
+import packageJson from '../../../../packages/hooks/package.json';
 
 import ThemeProvider from '@/components/ThemeProvider';
 import Sidebar from '@/components/Sidebar';

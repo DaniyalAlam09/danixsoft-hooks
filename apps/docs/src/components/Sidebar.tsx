@@ -41,6 +41,7 @@ export default function Sidebar() {
       <nav className="space-y-1">
         <NavSection title="Core" show={!search || "getting started".includes(search.toLowerCase())}>
           <NavLink href="/" search={search}>Getting Started</NavLink>
+          <NavLink href="/api-reference" search={search}>API Reference</NavLink>
         </NavSection>
         
         <NavSection title="State & Storage" show={!search}>

@@ -34,6 +34,9 @@ export const metadata: Metadata = {
     description: packageJson.description,
     creator: '@danixsoft',
   },
+  verification: {
+    google: '_hkHm6noShAZfqFRiBQg5pEaGqQLU52sW1O2P1DHAF8',
+  },
 };
 
 export default function RootLayout({

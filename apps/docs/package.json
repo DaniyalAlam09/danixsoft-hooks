@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint",
     "clean:generated": "node scripts/clean-generated-public.mjs",
-    "predev": "node scripts/clean-generated-public.mjs"
+    "predev": "node scripts/clean-generated-public.mjs",
+    "check:registry": "node scripts/check-registry-drift.mjs"
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",

@@ -39,5 +39,9 @@ jobs:
     - name: Build
       run: npm run build --workspace=@danixsoft/hooks
       
-    - name: Verify LLM Docs Drift
-      run: git diff --exit-code apps/docs/public/llms.txt apps/docs/public/llms-full.txt
+    # llms.txt and llms-full.txt are served by route handlers in the docs app,
+    # not committed to public/, so the old git-diff drift check no longer had
+    # anything to compare. This checks the source of truth behind them instead:
+    # the docs hook registry must match the package's real exports.
+    - name: Verify Docs Registry Matches Package Exports
+      run: npm run check:registry --workspace=docs

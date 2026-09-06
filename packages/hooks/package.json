@@ -1,6 +1,6 @@
 {
   "name": "@danixsoft/hooks",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "license": "MIT",
   "description": "The ultimate open-source, tree-shakeable React hooks library. 42+ essential, zero-dependency, isomorphic React hooks for modern applications (Next.js, Vite, SSR).",
   "keywords": [

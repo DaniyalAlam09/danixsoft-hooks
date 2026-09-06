@@ -2,24 +2,442 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ------------------------------------------------------------------
+   Design tokens.
+
+   Light is the base definition; `.dark` re-declares only what changes.
+   Every colour used in the app should come from one of these so the two
+   themes stay in step and a palette change is a one-file edit.
+   ------------------------------------------------------------------ */
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, Consolas,
+    monospace;
+
+  /* Brand ramp — indigo/violet */
+  --color-brand-50: oklch(0.97 0.015 285);
+  --color-brand-100: oklch(0.94 0.032 285);
+  --color-brand-200: oklch(0.89 0.06 285);
+  --color-brand-300: oklch(0.81 0.1 285);
+  --color-brand-400: oklch(0.72 0.15 285);
+  --color-brand-500: oklch(0.64 0.19 285);
+  --color-brand-600: oklch(0.56 0.21 285);
+  --color-brand-700: oklch(0.48 0.19 285);
+  --color-brand-800: oklch(0.4 0.15 285);
+  --color-brand-900: oklch(0.33 0.11 285);
+  --color-brand-950: oklch(0.22 0.08 285);
+}
+
+:root {
+  color-scheme: light;
+
+  --bg: oklch(0.99 0.002 285);
+  --bg-subtle: oklch(0.972 0.004 285);
+  --bg-muted: oklch(0.95 0.006 285);
+  --surface: oklch(1 0 0);
+  --surface-raised: oklch(1 0 0);
+  --surface-inset: oklch(0.975 0.004 285);
+
+  --border: oklch(0.91 0.006 285);
+  --border-strong: oklch(0.85 0.01 285);
+
+  --fg: oklch(0.22 0.012 285);
+  --fg-muted: oklch(0.48 0.012 285);
+  --fg-subtle: oklch(0.62 0.01 285);
+
+  --accent: oklch(0.56 0.21 285);
+  --accent-hover: oklch(0.5 0.21 285);
+  --accent-fg: oklch(0.99 0 0);
+  --accent-soft: oklch(0.955 0.025 285);
+  --accent-soft-fg: oklch(0.45 0.19 285);
+  --accent-ring: oklch(0.64 0.19 285 / 0.45);
+
+  --success: oklch(0.55 0.14 155);
+  --success-soft: oklch(0.95 0.04 155);
+  --warning: oklch(0.62 0.15 75);
+  --warning-soft: oklch(0.96 0.05 85);
+  --danger: oklch(0.56 0.19 25);
+  --danger-soft: oklch(0.955 0.03 25);
+
+  --code-bg: oklch(0.19 0.015 285);
+  --code-fg: oklch(0.93 0.006 285);
+  --code-chrome: oklch(0.15 0.014 285);
+  --code-border: oklch(0.28 0.02 285);
+
+  --shadow-sm: 0 1px 2px oklch(0.22 0.02 285 / 0.05);
+  --shadow-md: 0 4px 12px -2px oklch(0.22 0.02 285 / 0.08),
+    0 2px 4px -2px oklch(0.22 0.02 285 / 0.05);
+  --shadow-lg: 0 12px 32px -8px oklch(0.22 0.02 285 / 0.14),
+    0 4px 10px -4px oklch(0.22 0.02 285 / 0.07);
+
+  --header-h: 3.75rem;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --bg: oklch(0.16 0.008 285);
+  --bg-subtle: oklch(0.185 0.009 285);
+  --bg-muted: oklch(0.22 0.011 285);
+  --surface: oklch(0.202 0.01 285);
+  --surface-raised: oklch(0.235 0.012 285);
+  --surface-inset: oklch(0.175 0.009 285);
+
+  --border: oklch(0.29 0.013 285);
+  --border-strong: oklch(0.37 0.016 285);
+
+  --fg: oklch(0.96 0.004 285);
+  --fg-muted: oklch(0.72 0.011 285);
+  --fg-subtle: oklch(0.58 0.012 285);
+
+  --accent: oklch(0.72 0.15 285);
+  --accent-hover: oklch(0.79 0.13 285);
+  --accent-fg: oklch(0.16 0.02 285);
+  --accent-soft: oklch(0.3 0.06 285);
+  --accent-soft-fg: oklch(0.86 0.09 285);
+  --accent-ring: oklch(0.72 0.15 285 / 0.5);
+
+  --success: oklch(0.75 0.14 155);
+  --success-soft: oklch(0.3 0.05 155);
+  --warning: oklch(0.8 0.13 85);
+  --warning-soft: oklch(0.32 0.05 85);
+  --danger: oklch(0.72 0.16 25);
+  --danger-soft: oklch(0.31 0.06 25);
+
+  --code-bg: oklch(0.145 0.01 285);
+  --code-fg: oklch(0.9 0.006 285);
+  --code-chrome: oklch(0.125 0.009 285);
+  --code-border: oklch(0.26 0.012 285);
+
+  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.3);
+  --shadow-md: 0 4px 12px -2px oklch(0 0 0 / 0.4);
+  --shadow-lg: 0 16px 40px -12px oklch(0 0 0 / 0.55);
+}
+
+/* Expose tokens to Tailwind's utility generator (bg-surface, text-fg-muted…) */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-bg-muted: var(--bg-muted);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-inset: var(--surface-inset);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-soft-fg: var(--accent-soft-fg);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-code-bg: var(--code-bg);
+  --color-code-fg: var(--code-fg);
+  --color-code-chrome: var(--code-chrome);
+  --color-code-border: var(--code-border);
+}
+
 @layer base {
-  button {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Anchor links must clear the sticky header. */
+    scroll-padding-top: calc(var(--header-h) + 1.5rem);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  button,
+  [role="button"] {
     cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--accent-ring);
+    color: var(--fg);
+  }
+
+  /* Section headings get a hover-revealed anchor link. */
+  .anchor-heading {
+    scroll-margin-top: calc(var(--header-h) + 1.5rem);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
 @layer utilities {
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
   .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
+    height: 8px;
   }
   .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: rgba(156, 163, 175, 0.3);
+    background-color: var(--border-strong);
     border-radius: 20px;
+    border: 2px solid transparent;
+    background-clip: content-box;
   }
-  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: rgba(75, 85, 99, 0.4);
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: var(--fg-subtle);
   }
+
+  /* Soft aurora used behind the hero and section headers. */
+  .aurora {
+    background-image:
+      radial-gradient(
+        ellipse 60% 50% at 15% 0%,
+        oklch(0.64 0.19 285 / 0.16),
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 50% 45% at 85% 5%,
+        oklch(0.68 0.16 200 / 0.12),
+        transparent 62%
+      );
+  }
+
+  .grid-lines {
+    background-image:
+      linear-gradient(to right, var(--border) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 20%, transparent 75%);
+  }
+
+  .text-gradient {
+    background-image: linear-gradient(
+      100deg,
+      var(--accent) 0%,
+      var(--color-brand-400) 60%,
+      var(--accent) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .animate-in-up {
+    animation: in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes in-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .animate-fade {
+    animation: fade 0.2s ease-out both;
+  }
+
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
+   Markdown rendered from generated TypeDoc output.
+
+   Written against our own tokens rather than pulling in the typography
+   plugin, so the reference matches the hand-built pages exactly and both
+   themes stay in step.
+   ------------------------------------------------------------------ */
+.markdown-body {
+  color: var(--fg-muted);
+  font-size: 15.5px;
+  line-height: 1.75;
+}
+
+.markdown-body > *:first-child {
+  margin-top: 0;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4 {
+  color: var(--fg);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  scroll-margin-top: calc(var(--header-h) + 1.5rem);
+}
+
+.markdown-body h1 {
+  font-size: 1.75rem;
+  margin: 2rem 0 1rem;
+}
+
+.markdown-body h2 {
+  font-size: 1.375rem;
+  margin: 2.5rem 0 0.875rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1.75rem;
+}
+
+.markdown-body h3 {
+  font-size: 1.0625rem;
+  margin: 1.75rem 0 0.5rem;
+}
+
+.markdown-body h4 {
+  font-size: 0.9375rem;
+  margin: 1.25rem 0 0.375rem;
+  color: var(--fg-muted);
+}
+
+.markdown-body p {
+  margin: 0 0 1rem;
+}
+
+.markdown-body a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--accent) 30%, transparent);
+  text-underline-offset: 3px;
+  font-weight: 500;
+}
+
+.markdown-body a:hover {
+  text-decoration-color: var(--accent);
+}
+
+.markdown-body strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  margin: 0 0 1.25rem;
+  padding-left: 1.25rem;
+}
+
+.markdown-body ul {
+  list-style: disc;
+}
+
+.markdown-body ol {
+  list-style: decimal;
+}
+
+.markdown-body li {
+  margin: 0.375rem 0;
+}
+
+.markdown-body li::marker {
+  color: var(--accent);
+}
+
+.markdown-body code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.15em 0.35em;
+  color: var(--accent-soft-fg);
+}
+
+.markdown-body pre {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  overflow-x: auto;
+  margin: 0 0 1.5rem;
+  font-size: 0.85rem;
+  line-height: 1.65;
+}
+
+.markdown-body pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--code-fg);
+  font-size: inherit;
+}
+
+.markdown-body hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+.markdown-body blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 1rem;
+  margin: 0 0 1.25rem;
+  color: var(--fg-muted);
+}
+
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1.5rem;
+  font-size: 14px;
+  display: block;
+  overflow-x: auto;
+}
+
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid var(--border);
+  padding: 0.625rem 0.875rem;
+  text-align: left;
+}
+
+.markdown-body th {
+  background: var(--bg-muted);
+  color: var(--fg);
+  font-weight: 600;
 }

@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "prebuild": "typedoc",
-    "build": "cd ../../packages/hooks && npm run build && cd - && next build",
+    "build": "cd ../../packages/hooks && npm run build && cd - && npm run clean:generated && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "clean:generated": "node scripts/clean-generated-public.mjs",
+    "predev": "node scripts/clean-generated-public.mjs"
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",

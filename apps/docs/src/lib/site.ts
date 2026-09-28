@@ -16,7 +16,7 @@ export const siteConfig = {
   hookCount: 44,
   author: {
     name: 'DanixSoft',
-    url: 'https://danixsoft.com',
+    url: 'https://www.danixsoft.com',
     email: 'hello@danixsoft.com',
   },
   links: {

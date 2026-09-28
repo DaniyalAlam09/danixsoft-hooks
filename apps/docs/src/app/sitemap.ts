@@ -4,6 +4,7 @@ import { apiReferenceRoutes } from '@/lib/api-reference';
 import { hooks } from '@/lib/hooks-registry';
 import { guides } from '@/content/guides';
 import { comparisons } from '@/content/comparisons';
+import { hookLastModified, lastModified } from '@/lib/last-modified';
 
 const url = (route: string) =>
   route === '/' ? siteConfig.url : `${siteConfig.url}${route}`;
@@ -14,21 +15,25 @@ const url = (route: string) =>
  * to forget to update.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
+  // Last git commit touching what each page renders from, so lastModified is
+  // a real freshness signal rather than the deploy time.
+  const docs = (path: string) => `apps/docs/src/${path}`;
+  const registry = docs('lib/hooks-registry.ts');
+  const librarySource = 'packages/hooks/src';
 
   const core: MetadataRoute.Sitemap = [
-    { url: url('/'), lastModified: now, changeFrequency: 'weekly', priority: 1 },
-    { url: url('/hooks'), lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
-    { url: url('/docs'), lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
-    { url: url('/guides'), lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
-    { url: url('/compare'), lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
-    { url: url('/faq'), lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
-    { url: url('/api-reference'), lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
+    { url: url('/'), lastModified: lastModified(docs('app/(marketing)/page.tsx'), registry), changeFrequency: 'weekly', priority: 1 },
+    { url: url('/hooks'), lastModified: lastModified(docs('app/(docs)/hooks'), registry), changeFrequency: 'weekly', priority: 0.9 },
+    { url: url('/docs'), lastModified: lastModified(docs('app/(docs)/docs')), changeFrequency: 'monthly', priority: 0.9 },
+    { url: url('/guides'), lastModified: lastModified(docs('content/guides.ts')), changeFrequency: 'weekly', priority: 0.8 },
+    { url: url('/compare'), lastModified: lastModified(docs('content/comparisons.ts')), changeFrequency: 'monthly', priority: 0.8 },
+    { url: url('/faq'), lastModified: lastModified(docs('content/faq.ts')), changeFrequency: 'monthly', priority: 0.7 },
+    { url: url('/api-reference'), lastModified: lastModified(librarySource), changeFrequency: 'monthly', priority: 0.6 },
   ];
 
   const hookPages: MetadataRoute.Sitemap = hooks.map((hook) => ({
     url: url(`/${hook.slug}`),
-    lastModified: now,
+    lastModified: hookLastModified(hook.slug, hook.name),
     changeFrequency: 'monthly',
     priority: 0.8,
   }));
@@ -52,7 +57,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // and a sitemap that lists 404s is worse than one that omits pages.
   const apiPages: MetadataRoute.Sitemap = apiReferenceRoutes().map((route) => ({
     url: url(`/api-reference/${route}`),
-    lastModified: now,
+    lastModified: lastModified(librarySource),
     changeFrequency: 'monthly',
     priority: 0.5,
   }));

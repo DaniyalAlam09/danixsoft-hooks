@@ -1,28 +1,10 @@
 'use client';
 import { useState } from 'react';
 import { usePrevious } from '@danixsoft/hooks';
-import CodeBlock from '@/components/docs/code-block';
 
 export default function UsePreviousPage() {
   const [count, setCount] = useState(0);
   const prevCount = usePrevious(count);
-
-  const codeString = `
-import { useState } from 'react';
-import { usePrevious } from '@danixsoft/hooks';
-
-function Counter() {
-  const [count, setCount] = useState(0);
-  const prevCount = usePrevious(count);
-
-  return (
-    <div>
-      <p>Now: {count}, Before: {prevCount}</p>
-      <button onClick={() => setCount(c => c + 1)}>Increment</button>
-    </div>
-  );
-}
-  `;
 
   return (
     <div>
@@ -32,9 +14,6 @@ function Counter() {
           <p className="mb-4 text-2xl font-bold">Current: <span className="text-blue-600 dark:text-blue-400">{count}</span></p>
         </div>
         <button onClick={() => setCount(c => c + 1)} className="px-8 py-4 bg-blue-600 text-white font-bold hover:bg-blue-500 rounded shadow dark:shadow-none border border-border hover:shadow-blue-500/25 transition-all active:scale-95">Increment +</button>
-      </div>
-      <div id="usage" className="scroll-mt-24">
-        <CodeBlock code={codeString} />
       </div>
     </div>
   );

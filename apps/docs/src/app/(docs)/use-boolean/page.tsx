@@ -1,27 +1,9 @@
 'use client';
 
 import { useBoolean } from '@danixsoft/hooks';
-import CodeBlock from '@/components/docs/code-block';
 
 export default function UseBooleanPage() {
   const { value, toggle, setTrue, setFalse } = useBoolean(false);
-
-  const codeString = `
-import { useBoolean } from '@danixsoft/hooks';
-
-function Checkbox() {
-  const { value, toggle, setTrue, setFalse } = useBoolean(false);
-
-  return (
-    <div>
-      <p>State: {value.toString()}</p>
-      <button onClick={toggle}>Toggle</button>
-      <button onClick={setTrue}>Set True</button>
-      <button onClick={setFalse}>Set False</button>
-    </div>
-  );
-}
-  `;
 
   return (
     <div>
@@ -49,9 +31,6 @@ function Checkbox() {
             <button onClick={toggle} className="px-5 py-2.5 rounded font-medium text-sm bg-bg-muted text-fg dark:bg-surface-raised dark:text-fg hover:bg-bg-muted hover:bg-bg-muted transition-colors">Toggle</button>
           </div>
         </div>
-      </div>
-      <div id="usage" className="scroll-mt-24">
-        <CodeBlock code={codeString} />
       </div>
     </div>
   );

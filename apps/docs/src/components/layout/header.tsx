@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useHydrated } from '@/lib/use-hydrated';
@@ -14,9 +15,14 @@ import {
   CloseIcon,
 } from '@/components/ui/icons';
 import { ThemeSwitch, ThemeToggleButton } from './theme-toggle';
-import CommandPalette from './command-palette';
 import MobileNav from './mobile-nav';
 import Logo from './logo';
+
+// Search is loaded on first open (⌘K, "/" or the button) rather than
+// hydrated on every page view.
+const CommandPalette = dynamic(() => import('./command-palette'), {
+  ssr: false,
+});
 
 export default function Header({ version }: { version: string }) {
   const pathname = usePathname();
@@ -148,7 +154,9 @@ export default function Header({ version }: { version: string }) {
       </header>
 
       <MobileNav open={navOpen} onClose={closeNav} />
-      <CommandPalette open={searchOpen} onOpenChange={setSearchOpen} />
+      {searchOpen && (
+        <CommandPalette open={searchOpen} onOpenChange={setSearchOpen} />
+      )}
     </>
   );
 }

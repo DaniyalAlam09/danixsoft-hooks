@@ -1,27 +1,10 @@
 'use client';
 import { useRef } from 'react';
 import { useOnScreen } from '@danixsoft/hooks';
-import CodeBlock from '@/components/docs/code-block';
 
 export default function UseOnScreenPage() {
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(ref);
-
-  const codeString = `
-import { useRef } from 'react';
-import { useOnScreen } from '@danixsoft/hooks';
-
-function LazyImage() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isVisible = useOnScreen(ref);
-
-  return (
-    <div ref={ref}>
-      {isVisible ? <img src="huge-image.jpg" /> : <p>Loading image...</p>}
-    </div>
-  );
-}
-  `;
 
   return (
     <div className="min-h-[200vh]">
@@ -34,10 +17,6 @@ function LazyImage() {
             {isVisible ? 'Yes' : 'No'}
           </span>
         </p>
-      </div>
-
-      <div id="usage" className="scroll-mt-24">
-        <CodeBlock code={codeString} />
       </div>
       
       <div className="mt-[80vh] mb-[50vh] flex justify-center">

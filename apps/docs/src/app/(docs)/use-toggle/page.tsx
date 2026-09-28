@@ -1,30 +1,9 @@
 'use client';
 
 import { useToggle } from '@danixsoft/hooks';
-import CodeBlock from '@/components/docs/code-block';
 
 export default function UseTogglePage() {
   const [value, toggle, setTrue, setFalse] = useToggle(false);
-
-  const codeString = `
-import { useToggle } from '@danixsoft/hooks';
-
-function Modal() {
-  const [isOpen, toggleModal, openModal, closeModal] = useToggle(false);
-
-  return (
-    <>
-      <button onClick={openModal}>Open Modal</button>
-      {isOpen && (
-        <div className="modal">
-          <h2>Hello World</h2>
-          <button onClick={closeModal}>Close</button>
-        </div>
-      )}
-    </>
-  );
-}
-  `;
 
   return (
     <div>
@@ -44,9 +23,6 @@ function Modal() {
             <button onClick={setFalse} className="px-6 py-2.5 rounded font-medium text-sm bg-bg-muted text-fg-muted dark:bg-surface-raised dark:text-fg-muted hover:bg-bg-muted transition-colors uppercase tracking-wider">Set False</button>
           </div>
         </div>
-      </div>
-      <div id="usage" className="scroll-mt-24">
-        <CodeBlock code={codeString} />
       </div>
     </div>
   );

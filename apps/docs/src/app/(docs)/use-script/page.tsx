@@ -1,28 +1,7 @@
-'use client';
-
-import CodeBlock from '@/components/docs/code-block';
-
+/**
+ * This hook has no interactive demo. Its usage example lives in
+ * src/content/hook-examples.ts and is rendered on the server by HookPage.
+ */
 export default function Page() {
-  const codeString = `
-import { useScript } from '@danixsoft/hooks';
-
-function Example() {
-  const status = useScript('https://code.jquery.com/jquery-3.6.0.min.js');
-
-  return (
-    <div>
-      <p>Script status: {status}</p>
-      {status === 'ready' && <p>jQuery is ready!</p>}
-    </div>
-  );
-}
-  `;
-
-  return (
-    <div>
-      <div id="usage" className="scroll-mt-24">
-        <CodeBlock code={codeString} />
-      </div>
-    </div>
-  );
+  return null;
 }

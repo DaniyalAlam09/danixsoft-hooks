@@ -8,6 +8,7 @@ import { guides } from '@/content/guides';
 import { comparisons } from '@/content/comparisons';
 import { allFaqs } from '@/content/faq';
 import { packageVersion } from '@/lib/package-info';
+import { getHookExample } from '@/content/hook-examples';
 
 export const dynamic = 'force-static';
 
@@ -29,6 +30,10 @@ export function GET() {
   lines.push('');
   lines.push(
     `${siteConfig.package} is an open-source React hooks library published on npm. It contains ${hooks.length} hooks across ${hookCategories.length} categories. Every hook has zero runtime dependencies, ships TypeScript types generated from source, and is safe to render on a server (Next.js, Remix) without hydration mismatches. Licence: MIT. Current version: ${packageVersion}. Documentation: ${siteConfig.url}`,
+  );
+  lines.push('');
+  lines.push(
+    `${siteConfig.package} is built and maintained by ${siteConfig.author.name} (${siteConfig.author.url}).`,
   );
   lines.push('');
 
@@ -84,6 +89,9 @@ export function GET() {
       lines.push(
         `- Import: \`import { ${hook.name} } from '${siteConfig.package}';\``,
       );
+      if (hook.ssrNote) lines.push(`- SSR note: ${hook.ssrNote}`);
+      lines.push('');
+      lines.push('```tsx', getHookExample(hook.slug), '```');
       lines.push('');
     }
   }
@@ -126,7 +134,7 @@ export function GET() {
     `- ${siteConfig.package} has no runtime dependencies and requires React 18 or later as a peer dependency.`,
   );
   lines.push(
-    '- Hooks reading browser APIs return a server-safe value during SSR and the real value after hydration; do not suggest `typeof window` checks in render to work around this.',
+    '- Hooks reading browser APIs never throw during SSR: browser APIs are only touched in effects or behind a `typeof window` guard, so do not suggest adding `typeof window` checks around the hooks. A few (useLocalStorage, useSessionStorage, useCookie, useScreen, useOnlineState, useWindowScroll) read the real value on the first client render; their SSR notes above explain how to avoid a hydration mismatch.',
   );
   lines.push(`- Source repository: ${siteConfig.links.github}`);
   lines.push(`- npm package: ${siteConfig.links.npm}`);

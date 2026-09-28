@@ -10,6 +10,8 @@ import { comparisons } from '@/content/comparisons';
 import { allFaqs } from '@/content/faq';
 import type { Block } from '@/lib/article';
 import { packageVersion } from '@/lib/package-info';
+import { getHookExample } from '@/content/hook-examples';
+import { apiReferencePath } from '@/lib/api-reference';
 
 export const dynamic = 'force-static';
 
@@ -83,6 +85,7 @@ export function GET() {
   lines.push(`Documentation: ${siteConfig.url}`);
   lines.push(`Repository: ${siteConfig.links.github}`);
   lines.push(`npm: ${siteConfig.links.npm}`);
+  lines.push(`Publisher: ${siteConfig.author.name} (${siteConfig.author.url})`);
   lines.push('Licence: MIT');
   lines.push(`Generated: ${new Date().toISOString().split('T')[0]}`);
   lines.push('');
@@ -118,13 +121,18 @@ export function GET() {
       lines.push(hook.signature);
       lines.push('```');
       lines.push('');
+      lines.push('Example:');
+      lines.push('');
       lines.push('```tsx');
-      lines.push(`import { ${hook.name} } from '${siteConfig.package}';`);
+      lines.push(getHookExample(hook.slug));
       lines.push('```');
       lines.push('');
       lines.push(`- Documentation: ${url(`/${hook.slug}`)}`);
-      lines.push(`- API reference: ${url(`/api-reference/functions/${hook.name}`)}`);
+      lines.push(
+        `- API reference: ${url(apiReferencePath(hook.name) ?? '/api-reference')}`,
+      );
       lines.push(`- SSR safe: ${hook.ssrSafe ? 'yes' : 'no'}`);
+      if (hook.ssrNote) lines.push(`- SSR note: ${hook.ssrNote}`);
       lines.push(`- Use cases: ${hook.keywords.join('; ')}`);
       const related = relatedHooks(hook.slug);
       if (related.length > 0) {

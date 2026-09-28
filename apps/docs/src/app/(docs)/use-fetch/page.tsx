@@ -1,22 +1,8 @@
 'use client';
 import { useFetch } from '@danixsoft/hooks';
-import CodeBlock from '@/components/docs/code-block';
 
 export default function UseFetchPage() {
   const { data, error, isLoading } = useFetch<{ title: string }>('https://jsonplaceholder.typicode.com/todos/1');
-
-  const codeString = `
-import { useFetch } from '@danixsoft/hooks';
-
-function TodoItem() {
-  const { data, error, isLoading } = useFetch('https://jsonplaceholder.typicode.com/todos/1');
-
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
-  return <div>{JSON.stringify(data)}</div>;
-}
-  `;
 
   return (
     <div>
@@ -28,9 +14,6 @@ function TodoItem() {
             {JSON.stringify(data, null, 2)}
           </pre>
         )}
-      </div>
-      <div id="usage" className="scroll-mt-24">
-        <CodeBlock code={codeString} />
       </div>
     </div>
   );

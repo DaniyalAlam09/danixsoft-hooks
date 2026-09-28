@@ -1,20 +1,7 @@
 'use client';
 
-import CodeBlock from '@/components/docs/code-block';
 
 export default function Page() {
-  const codeString = `
-import { useClickAnyWhere } from '@danixsoft/hooks';
-
-function Example() {
-  useClickAnyWhere(() => {
-    console.log('Clicked anywhere!');
-  });
-  
-  return <div>Click anywhere!</div>;
-}
-  `;
-
   return (
     <div>
       
@@ -25,9 +12,6 @@ function Example() {
         <div className="p-8 flex flex-col items-center justify-center min-h-[300px] bg-bg-subtle">
           <p className="text-fg-muted">Interactive demo coming soon.</p>
         </div>
-      </div>
-      <div id="usage" className="scroll-mt-24">
-        <CodeBlock code={codeString} />
       </div>
     </div>
   );

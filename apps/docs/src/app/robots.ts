@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://danixsoft-hooks-docs.vercel.app/sitemap.xml',
+    sitemap: 'https://react-hooks.danixsoft.com/sitemap.xml',
   };
 }

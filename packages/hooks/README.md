@@ -13,7 +13,9 @@
 
 <br />
 
-📖 **[Read the Official Documentation & Interactive Demos](https://danixsoft-hooks-docs.vercel.app/)**
+📖 **[Read the Official Documentation & Interactive Demos](https://react-hooks.danixsoft.com/)**
+
+Built and maintained by [DanixSoft](https://www.danixsoft.com).
 
 Stop copying and pasting the same utility functions across projects. Get instant access to a battle-tested library of essential, high-performance React hooks designed for modern web applications. Fully compatible with Next.js, Remix, Vite, and standard React setups.
 
@@ -143,4 +145,4 @@ We have carefully categorized our hooks for maximum developer experience.
 We welcome contributions! Please check our GitHub issues and submit a pull request.
 
 ## 📄 License
-MIT © DanixSoft
+MIT © [DanixSoft](https://www.danixsoft.com)

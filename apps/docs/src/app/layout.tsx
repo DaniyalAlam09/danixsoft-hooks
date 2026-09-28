@@ -17,13 +17,15 @@ export const metadata: Metadata = {
   title: `${packageJson.name} - The Ultimate React Hooks Library`,
   description: packageJson.description,
   keywords: ['react', 'hooks', 'react hooks', 'nextjs', 'usehooks', 'typescript hooks', 'custom hooks', 'react 18'],
-  authors: [{ name: 'DanixSoft', url: 'https://danixsoft.com' }],
+  // This is an older copy of the docs; resolve metadata URLs to the live site.
+  metadataBase: new URL('https://react-hooks.danixsoft.com'),
+  authors: [{ name: 'DanixSoft', url: 'https://www.danixsoft.com' }],
   creator: 'DanixSoft',
   publisher: 'DanixSoft',
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://danixsoft-hooks-docs.vercel.app',
+    url: 'https://react-hooks.danixsoft.com',
     title: `${packageJson.name} - Enterprise React Hooks`,
     description: packageJson.description,
     siteName: '@danixsoft/hooks Docs',
@@ -39,6 +41,13 @@ export const metadata: Metadata = {
   },
 };
 
+const danixsoftOrganization = {
+  '@type': 'Organization',
+  '@id': 'https://www.danixsoft.com/#organization',
+  name: 'DanixSoft',
+  url: 'https://www.danixsoft.com',
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -49,10 +58,12 @@ export default function RootLayout({
     '@type': 'SoftwareApplication',
     name: packageJson.name,
     description: packageJson.description,
-    url: 'https://danixsoft-hooks-docs.vercel.app',
+    url: 'https://react-hooks.danixsoft.com',
     applicationCategory: 'DeveloperApplication',
     operatingSystem: 'Any',
     softwareVersion: packageJson.version,
+    author: danixsoftOrganization,
+    publisher: danixsoftOrganization,
     offers: {
       '@type': 'Offer',
       price: '0',
@@ -78,6 +89,18 @@ export default function RootLayout({
               <div className="max-w-4xl mx-auto w-full">
                 {children}
               </div>
+              <footer className="max-w-4xl mx-auto w-full px-6 py-8 text-sm text-neutral-500 dark:text-neutral-400">
+                A{' '}
+                <a
+                  href="https://www.danixsoft.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  DanixSoft
+                </a>{' '}
+                product.
+              </footer>
             </main>
             
             <RightSidebar />

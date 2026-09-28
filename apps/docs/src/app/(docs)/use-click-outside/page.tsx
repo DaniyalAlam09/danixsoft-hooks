@@ -1,37 +1,12 @@
 'use client';
 import { useRef, useState } from 'react';
 import { useClickOutside } from '@danixsoft/hooks';
-import CodeBlock from '@/components/docs/code-block';
 
 export default function UseClickOutsidePage() {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   
   useClickOutside(ref, () => setIsOpen(false));
-
-  const codeString = `
-import { useRef, useState } from 'react';
-import { useClickOutside } from '@danixsoft/hooks';
-
-function Dropdown() {
-  const [isOpen, setIsOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  
-  useClickOutside(ref, () => setIsOpen(false));
-
-  return (
-    <div style={{ position: 'relative' }}>
-      <button onClick={() => setIsOpen(true)}>Open</button>
-      
-      {isOpen && (
-        <div ref={ref} style={{ position: 'absolute' }}>
-          Dropdown Menu! Click outside to close.
-        </div>
-      )}
-    </div>
-  );
-}
-  `;
 
   return (
     <div>
@@ -46,9 +21,6 @@ function Dropdown() {
             <p className="text-fg-muted">Click anywhere outside this white box to close it automatically.</p>
           </div>
         )}
-      </div>
-      <div id="usage" className="scroll-mt-24">
-        <CodeBlock code={codeString} />
       </div>
     </div>
   );

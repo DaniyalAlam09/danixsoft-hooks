@@ -1,6 +1,6 @@
 <div align="center">
   <h1>@danixsoft/hooks</h1>
-  <p><strong>The ultimate collection of 42+ beautiful, robust, and zero-dependency React hooks.</strong></p>
+  <p><strong>44 production-ready, zero-dependency, SSR-safe React hooks for TypeScript.</strong></p>
   
   [![NPM Version](https://img.shields.io/npm/v/@danixsoft/hooks.svg?style=flat-square&color=blue)](https://www.npmjs.com/package/@danixsoft/hooks)
   [![NPM Downloads](https://img.shields.io/npm/dt/@danixsoft/hooks.svg?style=flat-square)](https://www.npmjs.com/package/@danixsoft/hooks)
@@ -15,9 +15,13 @@
 
 📖 **[Read the Official Documentation & Interactive Demos](https://react-hooks.danixsoft.com/)**
 
+Built and maintained by [DanixSoft](https://www.danixsoft.com).
+
 Stop copying and pasting the same utility functions across projects. Get instant access to a battle-tested library of essential, high-performance React hooks designed for modern web applications. Fully compatible with Next.js, Remix, Vite, and standard React setups.
 
 ## 🌟 Key Features
+
+* **44 hooks** for state, storage, forms, DOM, timers, lifecycle and device sensors.
 
 * **🌳 Tree-shakeable:** Import only what you need. Your final bundle size remains microscopic.
 * **🛡️ TypeScript First:** Written entirely in TypeScript. Enjoy full autocomplete and type safety.
@@ -80,67 +84,75 @@ function App() {
 }
 ```
 
-## 📚 42+ Available Hooks
+## 📚 All 44 Hooks
 
-We have carefully categorized our hooks for maximum developer experience.
+Every hook links to its documentation page: install command, copy-paste example, API table and SSR notes.
 
 ### State & Storage
-* `useBoolean` - Robust boolean state manager with absolute setters.
-* `useCounter` - Number counter with bounds and step increments.
-* `useMap` - React-friendly wrapper for native Map.
-* `useLocalStorage` - Persist state to `window.localStorage`.
-* `useSessionStorage` - Persist state to `window.sessionStorage`.
-* `useCookie` - Read and update browser cookies.
-* `useDebounce` - Delay the execution of state updates.
-* `useToggle` - A simple boolean state toggler.
-* `usePrevious` - Store the previous state or prop value.
-* `useStep` - Manage wizard/multi-step flows easily.
+* [`useBoolean`](https://react-hooks.danixsoft.com/use-boolean) - Robust boolean state manager with absolute setters.
+* [`useCounter`](https://react-hooks.danixsoft.com/use-counter) - Number counter with bounds and step increments.
+* [`useMap`](https://react-hooks.danixsoft.com/use-map) - React-friendly wrapper for native Map.
+* [`useLocalStorage`](https://react-hooks.danixsoft.com/use-local-storage) - Persist state to `window.localStorage`.
+* [`useSessionStorage`](https://react-hooks.danixsoft.com/use-session-storage) - Persist state to `window.sessionStorage`.
+* [`useCookie`](https://react-hooks.danixsoft.com/use-cookie) - Read and update browser cookies.
+* [`useDebounce`](https://react-hooks.danixsoft.com/use-debounce) - Delay the execution of state updates.
+* [`useToggle`](https://react-hooks.danixsoft.com/use-toggle) - A simple boolean state toggler.
+* [`usePrevious`](https://react-hooks.danixsoft.com/use-previous) - Store the previous state or prop value.
+* [`useStep`](https://react-hooks.danixsoft.com/use-step) - Manage wizard/multi-step flows easily.
 
 ### Forms & Data
-* `useForm` - Lightweight form state and validation manager.
-* `usePagination` - Client-side array pagination logic.
-* `useInfiniteScroll` - Easily implement infinite scrolling.
-* `useFetch` - Fetch API data with loading and error states.
+* [`useForm`](https://react-hooks.danixsoft.com/use-form) - Lightweight form state and validation manager.
+* [`usePagination`](https://react-hooks.danixsoft.com/use-pagination) - Client-side array pagination logic.
+* [`useInfiniteScroll`](https://react-hooks.danixsoft.com/use-infinite-scroll) - Easily implement infinite scrolling.
+* [`useFetch`](https://react-hooks.danixsoft.com/use-fetch) - Fetch API data with loading and error states.
 
 ### DOM & Browser
-* `useClickOutside` - Detect clicks outside of a referenced component.
-* `useClickAnyWhere` - Listen for clicks anywhere on the document.
-* `useMediaQuery` - Subscribe to CSS media queries in React.
-* `useOnScreen` - Detect if an element is visible in the viewport.
-* `useIntersectionObserver` - Track elements entering or leaving the viewport.
-* `useWindowSize` - Track the dimensions of the browser window.
-* `useWindowScroll` - Track and manipulate window scroll position.
-* `useDocumentTitle` - Dynamically update the document title.
-* `useEventListener` - Safely bind event listeners to DOM elements.
-* `useHover` - Detect if a specific element is being hovered.
-* `useScreen` - Access the native Window.screen object.
-* `useMutationObserver` - Observe changes to the DOM tree.
-* `useScript` - Dynamically load and inject external scripts.
+* [`useClickOutside`](https://react-hooks.danixsoft.com/use-click-outside) - Detect clicks outside of a referenced component.
+* [`useClickAnyWhere`](https://react-hooks.danixsoft.com/use-click-any-where) - Listen for clicks anywhere on the document.
+* [`useMediaQuery`](https://react-hooks.danixsoft.com/use-media-query) - Subscribe to CSS media queries in React.
+* [`useOnScreen`](https://react-hooks.danixsoft.com/use-on-screen) - Detect if an element is visible in the viewport.
+* [`useIntersectionObserver`](https://react-hooks.danixsoft.com/use-intersection-observer) - Track elements entering or leaving the viewport.
+* [`useWindowSize`](https://react-hooks.danixsoft.com/use-window-size) - Track the dimensions of the browser window.
+* [`useWindowScroll`](https://react-hooks.danixsoft.com/use-window-scroll) - Track and manipulate window scroll position.
+* [`useDocumentTitle`](https://react-hooks.danixsoft.com/use-document-title) - Dynamically update the document title.
+* [`useEventListener`](https://react-hooks.danixsoft.com/use-event-listener) - Safely bind event listeners to DOM elements.
+* [`useHover`](https://react-hooks.danixsoft.com/use-hover) - Detect if a specific element is being hovered.
+* [`useScreen`](https://react-hooks.danixsoft.com/use-screen) - Access the native Window.screen object.
+* [`useMutationObserver`](https://react-hooks.danixsoft.com/use-mutation-observer) - Observe changes to the DOM tree.
+* [`useScript`](https://react-hooks.danixsoft.com/use-script) - Dynamically load and inject external scripts.
 
 ### Timers & Lifecycle
-* `useInterval` - Declarative setInterval for React.
-* `useTimeout` - Declarative setTimeout for React.
-* `useCountdown` - Manage countdown timers.
-* `useIsMounted` - Determine if a component is currently mounted.
-* `useIsClient` - Safely determine if code is running on the client.
-* `useUnmount` - Run code only when a component unmounts.
-* `useUpdateEffect` - Like useEffect, but ignores the first render.
-* `useEvent` - Create a stable, memoized callback function.
-* `useIsomorphicLayoutEffect` - `useLayoutEffect` that does not throw warnings in SSR.
+* [`useInterval`](https://react-hooks.danixsoft.com/use-interval) - Declarative setInterval for React.
+* [`useTimeout`](https://react-hooks.danixsoft.com/use-timeout) - Declarative setTimeout for React.
+* [`useCountdown`](https://react-hooks.danixsoft.com/use-countdown) - Manage countdown timers.
+* [`useIsMounted`](https://react-hooks.danixsoft.com/use-is-mounted) - Determine if a component is currently mounted.
+* [`useIsClient`](https://react-hooks.danixsoft.com/use-is-client) - Safely determine if code is running on the client.
+* [`useUnmount`](https://react-hooks.danixsoft.com/use-unmount) - Run code only when a component unmounts.
+* [`useUpdateEffect`](https://react-hooks.danixsoft.com/use-update-effect) - Like useEffect, but ignores the first render.
+* [`useEvent`](https://react-hooks.danixsoft.com/use-event) - Create a stable, memoized callback function.
+* [`useIsomorphicLayoutEffect`](https://react-hooks.danixsoft.com/use-isomorphic-layout-effect) - `useLayoutEffect` that does not throw warnings in SSR.
 
 ### Advanced Sensors
-* `useCopyToClipboard` - Copy text to the clipboard safely.
-* `useOnlineState` - Track network status of the user.
-* `useGeolocation` - Track device location via Geolocation API.
-* `useAudio` - Easily play and control audio files.
-* `useMouse` - Track mouse coordinates.
-* `useTouch` - Track multi-touch events on screens.
-* `useSwipe` - Detect directional swipe gestures.
-* `useScrollLock` - Lock scrolling on the document body.
+* [`useCopyToClipboard`](https://react-hooks.danixsoft.com/use-copy-to-clipboard) - Copy text to the clipboard safely.
+* [`useOnlineState`](https://react-hooks.danixsoft.com/use-online-state) - Track network status of the user.
+* [`useGeolocation`](https://react-hooks.danixsoft.com/use-geolocation) - Track device location via Geolocation API.
+* [`useAudio`](https://react-hooks.danixsoft.com/use-audio) - Easily play and control audio files.
+* [`useMouse`](https://react-hooks.danixsoft.com/use-mouse) - Track mouse coordinates.
+* [`useTouch`](https://react-hooks.danixsoft.com/use-touch) - Track multi-touch events on screens.
+* [`useSwipe`](https://react-hooks.danixsoft.com/use-swipe) - Detect directional swipe gestures.
+* [`useScrollLock`](https://react-hooks.danixsoft.com/use-scroll-lock) - Lock scrolling on the document body.
+
+## 🔗 Documentation
+
+* [Getting started](https://react-hooks.danixsoft.com/docs) — installation, TypeScript, SSR and tree shaking.
+* [All hooks](https://react-hooks.danixsoft.com/hooks) — searchable directory.
+* [Guides](https://react-hooks.danixsoft.com/guides) and [comparisons](https://react-hooks.danixsoft.com/compare) with other hook libraries.
+* [API reference](https://react-hooks.danixsoft.com/api-reference) — types generated from source.
+* [llms.txt](https://react-hooks.danixsoft.com/llms.txt) / [llms-full.txt](https://react-hooks.danixsoft.com/llms-full.txt) — machine-readable docs for AI assistants.
 
 ## 🤝 Contributing
 
 We welcome contributions! Please check our GitHub issues and submit a pull request.
 
 ## 📄 License
-MIT © DanixSoft
+MIT © [DanixSoft](https://www.danixsoft.com)

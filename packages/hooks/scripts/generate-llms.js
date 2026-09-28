@@ -20,7 +20,9 @@ for (let i = 0; i < lines.length; i++) {
 
 const summary = `# @danixsoft/hooks
 
-@danixsoft/hooks is a zero-dependency, tree-shakeable, and SSR-safe React hooks library for modern applications. It provides 42+ highly optimized hooks for State, DOM, Sensors, and UI flows.
+@danixsoft/hooks is a zero-dependency, tree-shakeable, and SSR-safe React hooks library for modern applications. It provides ${signatures.length} hooks for state, storage, forms, DOM, timers and device sensors.
+
+@danixsoft/hooks is built and maintained by DanixSoft (https://www.danixsoft.com).
 
 ## Hooks Signatures
 `;

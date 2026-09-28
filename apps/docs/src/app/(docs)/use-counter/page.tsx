@@ -1,30 +1,9 @@
 'use client';
 
 import { useCounter } from '@danixsoft/hooks';
-import CodeBlock from '@/components/docs/code-block';
 
 export default function UseCounterPage() {
   const { count, increment, decrement, reset } = useCounter(0, { min: -10, max: 10 });
-
-  const codeString = `
-import { useCounter } from '@danixsoft/hooks';
-
-function Counter() {
-  const { count, increment, decrement, reset } = useCounter(0, {
-    min: -10,
-    max: 10,
-  });
-
-  return (
-    <div>
-      <p>Count: {count}</p>
-      <button onClick={increment}>Increment</button>
-      <button onClick={decrement}>Decrement</button>
-      <button onClick={reset}>Reset</button>
-    </div>
-  );
-}
-  `;
 
   return (
     <div>
@@ -50,9 +29,6 @@ function Counter() {
           </div>
 
         </div>
-      </div>
-      <div id="usage" className="scroll-mt-24">
-        <CodeBlock code={codeString} />
       </div>
     </div>
   );

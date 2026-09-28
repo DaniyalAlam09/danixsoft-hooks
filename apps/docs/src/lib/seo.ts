@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { siteConfig, absoluteUrl } from './site';
+import { getHook } from './hooks-registry';
+import { hookLastModified } from './last-modified';
 
 interface PageSeoInput {
   title: string;
@@ -13,7 +15,14 @@ interface PageSeoInput {
   type?: 'website' | 'article';
   /** Set true for thin utility routes we would rather keep out of the index. */
   noindex?: boolean;
+  /** Social card. Defaults to the site-wide /opengraph-image. */
+  image?: { path: string; alt: string };
 }
+
+const DEFAULT_IMAGE = {
+  path: '/opengraph-image',
+  alt: `${siteConfig.name} — ${siteConfig.tagline}`,
+};
 
 /**
  * Builds a complete, canonical-correct Metadata object.
@@ -29,8 +38,14 @@ export function buildMetadata({
   modifiedTime,
   type = 'website',
   noindex = false,
+  image = DEFAULT_IMAGE,
 }: PageSeoInput): Metadata {
   const url = absoluteUrl(path);
+  // Set explicitly: a page-level `openGraph` object replaces the root one, so
+  // without this every inner page shipped with no og:image at all.
+  const images = [
+    { url: absoluteUrl(image.path), width: 1200, height: 630, alt: image.alt },
+  ];
 
   return {
     // `absolute` opts out of the root layout's `%s | @danixsoft/hooks`
@@ -50,11 +65,13 @@ export function buildMetadata({
       siteName: siteConfig.name,
       ...(publishedTime ? { publishedTime } : {}),
       ...(modifiedTime ? { modifiedTime } : {}),
+      images,
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
+      images,
       creator: siteConfig.twitter,
       site: siteConfig.twitter,
     },
@@ -74,23 +91,47 @@ export function buildMetadata({
   };
 }
 
+/**
+ * Metadata for a /use-* hook page. Titles follow
+ * "useDebounce — React hook for debouncing values | @danixsoft/hooks" so the
+ * hook name and the problem it solves both lead the search result.
+ */
+export function hookMetadata(slug: string): Metadata {
+  const hook = getHook(slug);
+  if (!hook) throw new Error(`No registry entry for hook "${slug}"`);
+
+  return buildMetadata({
+    title: `${hook.name} — React hook for ${hook.purpose} | ${siteConfig.name}`,
+    description: `${hook.summary} SSR-safe, zero dependencies and fully typed. Install command, copy-paste example and API signature.`,
+    path: `/${hook.slug}`,
+    type: 'article',
+    modifiedTime: hookLastModified(hook.slug, hook.name),
+    keywords: [
+      hook.name,
+      `react ${hook.name}`,
+      `${hook.name} react hook`,
+      `react hook for ${hook.purpose}`,
+      ...hook.keywords,
+    ],
+    image: { path: `/og/${hook.slug}`, alt: `${hook.name} — ${hook.summary}` },
+  });
+}
+
 // --------------------------------------------------------------- JSON-LD
 
-const ORG_ID = `${siteConfig.url}/#organization`;
+// The publisher is the DanixSoft company, so its @id lives on the company
+// domain rather than this product site.
+const ORG_ID = `${siteConfig.author.url}/#organization`;
 const SITE_ID = `${siteConfig.url}/#website`;
 const SOFTWARE_ID = `${siteConfig.url}/#software`;
+const SOURCE_ID = `${siteConfig.url}/#source-code`;
+const MIT_LICENSE = 'https://opensource.org/licenses/MIT';
 
 export const organizationSchema = () => ({
   '@type': 'Organization',
   '@id': ORG_ID,
   name: siteConfig.author.name,
   url: siteConfig.author.url,
-  email: siteConfig.author.email,
-  logo: {
-    '@type': 'ImageObject',
-    url: absoluteUrl('/icon.svg'),
-  },
-  sameAs: [siteConfig.links.github, siteConfig.links.npm],
 });
 
 export const websiteSchema = () => ({
@@ -121,14 +162,41 @@ export const softwareSchema = (version: string) => ({
   operatingSystem: 'Any',
   softwareVersion: version,
   programmingLanguage: 'TypeScript',
-  license: siteConfig.links.license,
+  runtimePlatform: 'React 18+',
+  license: MIT_LICENSE,
   downloadUrl: siteConfig.links.npm,
+  installUrl: siteConfig.links.npm,
+  isAccessibleForFree: true,
   author: { '@id': ORG_ID },
+  publisher: { '@id': ORG_ID },
   offers: {
     '@type': 'Offer',
     price: '0',
     priceCurrency: 'USD',
   },
+});
+
+/** The library as source code — what an assistant needs to cite the repo. */
+export const sourceCodeSchema = (version: string) => ({
+  '@type': 'SoftwareSourceCode',
+  '@id': SOURCE_ID,
+  name: siteConfig.package,
+  description: siteConfig.description,
+  url: siteConfig.url,
+  codeRepository: siteConfig.links.github,
+  codeSampleType: 'full solution',
+  programmingLanguage: {
+    '@type': 'ComputerLanguage',
+    name: 'TypeScript',
+    url: 'https://www.typescriptlang.org',
+  },
+  runtimePlatform: ['React 18+', 'Browser', 'Node.js (server-side rendering)'],
+  license: MIT_LICENSE,
+  version,
+  author: { '@id': ORG_ID },
+  publisher: { '@id': ORG_ID },
+  targetProduct: { '@id': SOFTWARE_ID },
+  sameAs: [siteConfig.links.npm, siteConfig.links.github],
 });
 
 export const breadcrumbSchema = (trail: { name: string; path: string }[]) => ({
@@ -160,6 +228,8 @@ export const techArticleSchema = ({
   datePublished,
   dateModified,
   keywords = [],
+  image,
+  about,
 }: {
   headline: string;
   description: string;
@@ -167,6 +237,10 @@ export const techArticleSchema = ({
   datePublished: string;
   dateModified?: string;
   keywords?: string[];
+  /** Site-relative image path, e.g. `/og/use-debounce`. */
+  image?: string;
+  /** Set on hook pages: the article documents part of the library. */
+  about?: 'library';
 }) => ({
   '@type': 'TechArticle',
   headline,
@@ -181,6 +255,11 @@ export const techArticleSchema = ({
   keywords: keywords.join(', '),
   isAccessibleForFree: true,
   proficiencyLevel: 'Beginner',
+  isPartOf: { '@id': SITE_ID },
+  ...(image ? { image: absoluteUrl(image) } : {}),
+  ...(about === 'library'
+    ? { about: { '@id': SOFTWARE_ID }, mentions: { '@id': SOURCE_ID } }
+    : {}),
 });
 
 export const howToSchema = ({

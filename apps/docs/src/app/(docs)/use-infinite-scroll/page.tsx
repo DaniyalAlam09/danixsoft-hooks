@@ -1,7 +1,6 @@
 'use client';
 import { useState } from 'react';
 import { useInfiniteScroll } from '@danixsoft/hooks';
-import CodeBlock from '@/components/docs/code-block';
 
 export default function UseInfiniteScrollPage() {
   const [items, setItems] = useState<number[]>(Array.from({ length: 15 }, (_, i) => i));
@@ -17,31 +16,6 @@ export default function UseInfiniteScrollPage() {
   };
   
   const ref = useInfiniteScroll<HTMLDivElement>(loadMore, { threshold: 1 });
-
-  const codeString = `
-import { useState } from 'react';
-import { useInfiniteScroll } from '@danixsoft/hooks';
-
-function Feed() {
-  const [items, setItems] = useState([1, 2, 3]);
-  
-  const loadMore = () => {
-    // Fetch more items...
-    setItems(prev => [...prev, 4, 5, 6]);
-  };
-  
-  // Attach this ref to the element at the bottom of your list
-  const bottomRef = useInfiniteScroll<HTMLDivElement>(loadMore);
-
-  return (
-    <div style={{ height: '400px', overflow: 'auto' }}>
-      {items.map(i => <div key={i}>Item {i}</div>)}
-      
-      <div ref={bottomRef}>Loading more...</div>
-    </div>
-  );
-}
-  `;
 
   return (
     <div>
@@ -64,9 +38,6 @@ function Feed() {
             <span>Scroll down for more</span>
           )}
         </div>
-      </div>
-      <div id="usage" className="scroll-mt-24">
-        <CodeBlock code={codeString} />
       </div>
     </div>
   );

@@ -1,24 +1,9 @@
 'use client';
 
 import { useLocalStorage } from '@danixsoft/hooks';
-import CodeBlock from '@/components/docs/code-block';
 
 export default function UseLocalStoragePage() {
   const [theme, setTheme] = useLocalStorage<'dark' | 'light'>('docs-theme', 'dark');
-
-  const codeString = `
-import { useLocalStorage } from '@danixsoft/hooks';
-
-function ThemeToggle() {
-  const [theme, setTheme] = useLocalStorage('theme', 'dark');
-
-  return (
-    <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-      Current Theme: {theme}
-    </button>
-  );
-}
-  `;
 
   return (
     <div>
@@ -44,10 +29,6 @@ function ThemeToggle() {
           </button>
         </div>
         <p className="text-sm text-fg-muted mt-6">Try reloading the page, or clicking a different link in the sidebar. Notice how the whole site theme changes globally because it&apos;s wrapped in our ThemeProvider using this exact hook!</p>
-      </div>
-
-      <div id="usage" className="scroll-mt-24">
-        <CodeBlock code={codeString} />
       </div>
     </div>
   );

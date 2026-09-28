@@ -1,25 +1,7 @@
-'use client';
-
-import CodeBlock from '@/components/docs/code-block';
-
+/**
+ * This hook has no interactive demo. Its usage example lives in
+ * src/content/hook-examples.ts and is rendered on the server by HookPage.
+ */
 export default function Page() {
-  const codeString = `
-import { useTimeout } from '@danixsoft/hooks';
-
-function Example() {
-  useTimeout(() => {
-    console.log('Timeout!');
-  }, 3000);
-  
-  return <div>Wait 3 seconds...</div>;
-}
-  `;
-
-  return (
-    <div>
-      <div id="usage" className="scroll-mt-24">
-        <CodeBlock code={codeString} />
-      </div>
-    </div>
-  );
+  return null;
 }

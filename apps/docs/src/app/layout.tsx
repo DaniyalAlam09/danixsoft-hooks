@@ -9,6 +9,7 @@ import {
   organizationSchema,
   websiteSchema,
   softwareSchema,
+  sourceCodeSchema,
 } from '@/lib/seo';
 import ThemeProvider from '@/components/theme/theme-provider';
 import ThemeScript from '@/components/theme/theme-script';
@@ -114,6 +115,7 @@ export default function RootLayout({
     organizationSchema(),
     websiteSchema(),
     softwareSchema(packageVersion),
+    sourceCodeSchema(packageVersion),
   );
 
   return (

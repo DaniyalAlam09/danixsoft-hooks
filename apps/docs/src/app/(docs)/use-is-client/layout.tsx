@@ -1,16 +1,8 @@
 import type { Metadata } from 'next';
 import HookPage from '@/components/docs/hook-page';
-import { buildMetadata } from '@/lib/seo';
-import { getHook } from '@/lib/hooks-registry';
+import { hookMetadata } from '@/lib/seo';
 
-const hook = getHook('use-is-client')!;
-
-export const metadata: Metadata = buildMetadata({
-  title: `${hook.name} — React Hook | @danixsoft/hooks`,
-  description: hook.summary + ' Zero dependencies, fully typed and SSR-safe. Copy-paste example included.',
-  path: '/use-is-client',
-  keywords: [hook.name, `react ${hook.name}`, ...hook.keywords],
-});
+export const metadata: Metadata = hookMetadata('use-is-client');
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return <HookPage slug="use-is-client">{children}</HookPage>;

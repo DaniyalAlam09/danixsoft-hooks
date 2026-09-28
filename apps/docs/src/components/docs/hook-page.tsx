@@ -20,17 +20,32 @@ import JsonLd from '@/components/ui/json-ld';
 import { Badge } from '@/components/ui/primitives';
 import { ArrowRightIcon, GitHubIcon, ShieldIcon } from '@/components/ui/icons';
 import { apiReferencePath } from '@/lib/api-reference';
+import { hookLastModified } from '@/lib/last-modified';
+import { parseSignature } from '@/lib/signature';
+import {
+  getHookExample,
+  hooksWithoutDemo,
+  hooksWithSandbox,
+} from '@/content/hook-examples';
 import CodeBlock from './code-block';
+import SandboxEmbed from './sandbox-embed';
 
 const TOC = [
   { id: 'overview', text: 'Overview', level: 2 as const },
-  { id: 'demo', text: 'Live demo', level: 2 as const },
+  { id: 'install', text: 'Installation', level: 2 as const },
   { id: 'usage', text: 'Usage example', level: 2 as const },
-  { id: 'import', text: 'Import', level: 2 as const },
-  { id: 'signature', text: 'Type signature', level: 2 as const },
+  { id: 'demo', text: 'Live demo', level: 2 as const },
+  { id: 'signature', text: 'API', level: 2 as const },
+  { id: 'ssr', text: 'SSR notes', level: 2 as const },
   { id: 'when-to-use', text: 'When to use it', level: 2 as const },
   { id: 'related', text: 'Related hooks', level: 2 as const },
 ];
+
+const h2 =
+  'anchor-heading mt-14 mb-4 border-t border-border pt-10 text-2xl font-bold tracking-tight text-fg';
+const prose = 'text-[15.5px] leading-relaxed text-fg-muted';
+const inlineCode =
+  'rounded border border-border bg-bg-muted px-1.5 py-0.5 font-mono text-[13px] text-accent-soft-fg';
 
 /**
  * Shared chrome for every /use-* route.
@@ -59,6 +74,14 @@ export default function HookPage({
   // Not every export is a function — useIsomorphicLayoutEffect is a variable —
   // so ask where TypeDoc actually put it.
   const apiPath = apiReferencePath(hook.name);
+  const example = getHookExample(slug);
+  const hasDemo = !hooksWithoutDemo.has(slug);
+  const hasSandbox = hooksWithSandbox.has(slug);
+  const parsed = parseSignature(hook.signature);
+  const dateModified = hookLastModified(hook.slug, hook.name);
+  // Plain-language server-rendering behaviour, shown on the page and reused
+  // as the FAQ answer so the structured data matches what readers see.
+  const ssrSummary = `${hook.name} is safe to import and call during server rendering: browser-only APIs are only touched inside effects or behind a typeof window check, so it never throws on the server. In the Next.js App Router, call it from a component marked "use client".`;
 
   const faqs = [
     {
@@ -71,7 +94,7 @@ export default function HookPage({
     },
     {
       question: `Is ${hook.name} safe to use with server-side rendering?`,
-      answer: `Yes. ${hook.name} guards every browser-only API behind a typeof window check and returns a stable value during server rendering, so it works in Next.js, Remix and any other SSR setup without hydration mismatches.`,
+      answer: `Yes. ${ssrSummary}${hook.ssrNote ? ` ${hook.ssrNote}` : ''}`,
     },
     {
       question: `Does ${hook.name} have any dependencies?`,
@@ -90,8 +113,10 @@ export default function HookPage({
       description: hook.description,
       path,
       datePublished: '2025-01-15',
-      dateModified: new Date().toISOString().split('T')[0],
+      dateModified,
       keywords: [hook.name, ...hook.keywords],
+      image: `/og/${hook.slug}`,
+      about: 'library',
     }),
     faqSchema(faqs),
   );
@@ -127,8 +152,14 @@ export default function HookPage({
             <h1 className="mb-3 font-mono text-3xl font-bold tracking-tight text-fg sm:text-4xl">
               {hook.name}
             </h1>
+            {/* One-sentence answer first: it is what search snippets and
+                answer engines quote. */}
             <p className="text-pretty text-lg leading-relaxed text-fg-muted">
-              {hook.summary}
+              <strong className="font-semibold text-fg">{hook.name}</strong> is
+              a React hook for {hook.purpose} from{' '}
+              <code className="font-mono text-[0.9em]">{siteConfig.package}</code>
+              . {hook.summary} It is SSR-safe, has zero dependencies and ships
+              TypeScript types.
             </p>
           </header>
 
@@ -136,32 +167,19 @@ export default function HookPage({
             {hook.description}
           </p>
 
-          <h2
-            id="demo"
-            className="anchor-heading mt-12 mb-4 border-t border-border pt-10 text-2xl font-bold tracking-tight text-fg"
-          >
-            Live demo
+          <h2 id="install" className={h2}>
+            Installation
           </h2>
-          <p className="mb-5 text-[15.5px] leading-relaxed text-fg-muted">
-            Interact with the example below — it runs the real{' '}
-            <code className="rounded border border-border bg-bg-muted px-1.5 py-0.5 font-mono text-[13px] text-accent-soft-fg">
-              {hook.name}
-            </code>{' '}
-            hook from the published package, not a simulation.
+          <p className={`mb-1 ${prose}`}>
+            Install the package, then import {hook.name} by name. Tree shaking
+            removes every hook you do not import.
           </p>
-
-          {children}
-
-          <h2
-            id="import"
-            className="anchor-heading mt-14 mb-4 border-t border-border pt-10 text-2xl font-bold tracking-tight text-fg"
-          >
-            Import
-          </h2>
-          <p className="mb-1 text-[15.5px] leading-relaxed text-fg-muted">
-            Every hook is a named export from the package root. Tree shaking
-            removes whatever you do not import.
-          </p>
+          <CodeBlock
+            code={`npm install ${siteConfig.package}`}
+            language="bash"
+            title={null}
+            showLineNumbers={false}
+          />
           <CodeBlock
             code={`import { ${hook.name} } from '${siteConfig.package}';`}
             language="tsx"
@@ -169,13 +187,84 @@ export default function HookPage({
             showLineNumbers={false}
           />
 
-          <h2
-            id="signature"
-            className="anchor-heading mt-14 mb-4 border-t border-border pt-10 text-2xl font-bold tracking-tight text-fg"
-          >
-            Type signature
+          <h2 id="usage" className={h2}>
+            Usage example
           </h2>
-          <p className="mb-1 text-[15.5px] leading-relaxed text-fg-muted">
+          <p className={`mb-1 ${prose}`}>
+            A minimal, copy-pasteable example of {hook.name} in a React
+            component.
+          </p>
+          <CodeBlock code={example} title={`${hook.name}.example.tsx`} />
+
+          {hasDemo && (
+            <>
+              <h2 id="demo" className={h2}>
+                Live demo
+              </h2>
+              <p className={`mb-5 ${prose}`}>
+                {hasSandbox ? 'Open the editable sandbox below' : 'Interact with the example below'}{' '}
+                — it runs the real{' '}
+                <code className={inlineCode}>{hook.name}</code> hook from the
+                published package, not a simulation.
+              </p>
+            </>
+          )}
+
+          {children}
+          {hasSandbox && <SandboxEmbed code={example} />}
+
+          <h2 id="signature" className={h2}>
+            API
+          </h2>
+          <CodeBlock
+            code={hook.signature}
+            language="typescript"
+            title={null}
+            showLineNumbers={false}
+          />
+          {parsed && (
+            <div className="my-6 overflow-x-auto rounded-xl border border-border">
+              <table className="w-full border-collapse text-left text-[14px]">
+                <caption className="sr-only">
+                  {hook.name} parameters and return value
+                </caption>
+                <thead className="bg-bg-subtle text-fg">
+                  <tr>
+                    <th scope="col" className="px-4 py-2.5 font-semibold">Name</th>
+                    <th scope="col" className="px-4 py-2.5 font-semibold">Type</th>
+                    <th scope="col" className="px-4 py-2.5 font-semibold">Required</th>
+                  </tr>
+                </thead>
+                <tbody className="text-fg-muted">
+                  {parsed.params.length === 0 && (
+                    <tr className="border-t border-border">
+                      <td colSpan={3} className="px-4 py-2.5">
+                        {hook.name} takes no arguments.
+                      </td>
+                    </tr>
+                  )}
+                  {parsed.params.map((param) => (
+                    <tr key={param.name} className="border-t border-border align-top">
+                      <th scope="row" className="px-4 py-2.5 font-mono text-[13px] font-medium text-fg">
+                        {param.name}
+                      </th>
+                      <td className="px-4 py-2.5 font-mono text-[13px]">{param.type}</td>
+                      <td className="px-4 py-2.5">{param.optional ? 'No' : 'Yes'}</td>
+                    </tr>
+                  ))}
+                  <tr className="border-t border-border align-top">
+                    <th scope="row" className="px-4 py-2.5 font-semibold text-fg">
+                      Returns
+                    </th>
+                    <td colSpan={2} className="px-4 py-2.5 font-mono text-[13px]">
+                      {parsed.returns}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+          <p className={`mb-1 ${prose}`}>
             The full generated types, including every generic parameter, live in
             the{' '}
             <Link
@@ -186,17 +275,14 @@ export default function HookPage({
             </Link>
             .
           </p>
-          <CodeBlock
-            code={hook.signature}
-            language="typescript"
-            title={null}
-            showLineNumbers={false}
-          />
 
-          <h2
-            id="when-to-use"
-            className="anchor-heading mt-14 mb-4 border-t border-border pt-10 text-2xl font-bold tracking-tight text-fg"
-          >
+          <h2 id="ssr" className={h2}>
+            SSR notes
+          </h2>
+          <p className={`mb-3 ${prose}`}>{ssrSummary}</p>
+          {hook.ssrNote && <p className={`mb-3 ${prose}`}>{hook.ssrNote}</p>}
+
+          <h2 id="when-to-use" className={h2}>
             When to use it
           </h2>
           <ul className="mb-6 space-y-2.5">
@@ -238,10 +324,7 @@ export default function HookPage({
 
           {related.length > 0 && (
             <>
-              <h2
-                id="related"
-                className="anchor-heading mt-14 mb-4 border-t border-border pt-10 text-2xl font-bold tracking-tight text-fg"
-              >
+              <h2 id="related" className={h2}>
                 Related hooks
               </h2>
               <div className="grid gap-3 sm:grid-cols-2">
@@ -291,7 +374,11 @@ export default function HookPage({
 
         <aside className="sticky top-[calc(var(--header-h)+2rem)] hidden h-fit w-56 shrink-0 xl:block">
           <TableOfContents
-            entries={related.length > 0 ? TOC : TOC.filter((e) => e.id !== 'related')}
+            entries={TOC.filter(
+              (entry) =>
+                (entry.id !== 'related' || related.length > 0) &&
+                (entry.id !== 'demo' || hasDemo),
+            )}
           />
 
           <div className="mt-8 border-t border-border pt-6">

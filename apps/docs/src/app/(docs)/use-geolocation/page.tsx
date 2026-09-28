@@ -1,26 +1,7 @@
-'use client';
-
-import CodeBlock from '@/components/docs/code-block';
-
+/**
+ * This hook has no interactive demo. Its usage example lives in
+ * src/content/hook-examples.ts and is rendered on the server by HookPage.
+ */
 export default function Page() {
-  const codeString = `
-import { useGeolocation } from '@danixsoft/hooks';
-
-function Example() {
-  const state = useGeolocation();
-  
-  if (state.loading) return <p>Loading...</p>;
-  if (state.error) return <p>Error: {state.error.message}</p>;
-  
-  return <p>{state.latitude}, {state.longitude}</p>;
-}
-  `;
-
-  return (
-    <div>
-      <div id="usage" className="scroll-mt-24">
-        <CodeBlock code={codeString} />
-      </div>
-    </div>
-  );
+  return null;
 }

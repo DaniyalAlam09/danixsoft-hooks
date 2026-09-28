@@ -1,36 +1,10 @@
 'use client';
 import { useState } from 'react';
 import { useDebounce } from '@danixsoft/hooks';
-import CodeBlock from '@/components/docs/code-block';
 
 export default function UseDebouncePage() {
   const [val, setVal] = useState('');
   const debouncedVal = useDebounce(val, 500);
-
-  const codeString = `
-import { useState, useEffect } from 'react';
-import { useDebounce } from '@danixsoft/hooks';
-
-function SearchComponent() {
-  const [search, setSearch] = useState('');
-  const debouncedSearch = useDebounce(search, 500);
-
-  useEffect(() => {
-    if (debouncedSearch) {
-      // Call your API here
-      console.log('Searching for:', debouncedSearch);
-    }
-  }, [debouncedSearch]);
-
-  return (
-    <input 
-      value={search} 
-      onChange={(e) => setSearch(e.target.value)} 
-      placeholder="Search..."
-    />
-  );
-}
-  `;
 
   return (
     <div>
@@ -54,10 +28,6 @@ function SearchComponent() {
             <div className="text-blue-900 dark:text-white text-lg min-h-[1.75rem] font-medium">{debouncedVal}</div>
           </div>
         </div>
-      </div>
-      
-      <div id="usage" className="scroll-mt-24">
-        <CodeBlock code={codeString} />
       </div>
     </div>
   );

@@ -29,6 +29,8 @@ export interface HookEntry {
   category: HookCategoryId;
   /** Short one-liner used in cards, sidebar tooltips and meta descriptions. */
   summary: string;
+  /** What the hook is for, completing "React hook for …" in the page title. */
+  purpose: string;
   /** Longer, keyword-rich paragraph used for the page description + GEO answers. */
   description: string;
   /** TypeScript signature shown in the directory and used in llms.txt. */
@@ -39,6 +41,8 @@ export interface HookEntry {
   related: string[];
   /** True when the hook touches browser-only APIs and needs SSR guards. */
   ssrSafe: boolean;
+  /** Hook-specific server-rendering caveat, shown in the page's SSR notes. */
+  ssrNote?: string;
 }
 
 export const hookCategories: HookCategory[] = [
@@ -90,6 +94,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-boolean',
     name: 'useBoolean',
     category: 'state',
+    purpose: 'boolean state',
     summary: 'Boolean state with setTrue, setFalse and toggle helpers.',
     description:
       'useBoolean is a React hook for managing boolean state with named actions instead of raw setState calls. It returns the current value plus stable setTrue, setFalse, toggle and setValue callbacks, so modals, dropdowns and disclosure widgets read clearly at the call site.',
@@ -102,6 +107,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-counter',
     name: 'useCounter',
     category: 'state',
+    purpose: 'bounded counters',
     summary: 'Numeric counter with min, max and step bounds.',
     description:
       'useCounter is a React hook for numeric state with built-in bounds. Pass min, max and step options and it clamps every increment, decrement and set, so quantity pickers, ratings and stepper inputs never leave their valid range.',
@@ -115,6 +121,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-map',
     name: 'useMap',
     category: 'state',
+    purpose: 'reactive Map state',
     summary: 'Reactive Map with set, delete, reset and clear actions.',
     description:
       'useMap gives you a JavaScript Map backed by React state. Reads go through a read-only Map interface while set, setAll, remove, reset and clear trigger re-renders, which makes it ideal for keyed selections, per-row form state and caches.',
@@ -128,6 +135,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-local-storage',
     name: 'useLocalStorage',
     category: 'state',
+    purpose: 'persistent localStorage state',
     summary: 'State synced to localStorage, across tabs and components.',
     description:
       'useLocalStorage persists React state to window.localStorage and keeps every component and browser tab in sync through storage events. It serialises with JSON, guards against SSR by falling back to the initial value on the server, and never throws when storage is unavailable or full.',
@@ -141,11 +149,14 @@ export const hooks: HookEntry[] = [
     ],
     related: ['use-session-storage', 'use-cookie', 'use-is-client'],
     ssrSafe: true,
+    ssrNote:
+      'The initial state is read from localStorage on the first client render, while the server renders initialValue. If the stored value changes the markup, render that part after hydration (for example behind useIsClient) to avoid a hydration mismatch.',
   },
   {
     slug: 'use-session-storage',
     name: 'useSessionStorage',
     category: 'state',
+    purpose: 'sessionStorage state',
     summary: 'State scoped to a single browser tab session.',
     description:
       'useSessionStorage mirrors useLocalStorage but writes to sessionStorage, so values live only for the current tab and are cleared when it closes. Use it for multi-step form drafts, one-off dismissals and anything that should not outlive the session.',
@@ -154,11 +165,14 @@ export const hooks: HookEntry[] = [
     keywords: ['sessionStorage hook', 'tab scoped state', 'form draft state'],
     related: ['use-local-storage', 'use-cookie', 'use-form'],
     ssrSafe: true,
+    ssrNote:
+      'The initial state is read from sessionStorage on the first client render, while the server renders initialValue. If the stored value changes the markup, render that part after hydration (for example behind useIsClient) to avoid a hydration mismatch.',
   },
   {
     slug: 'use-cookie',
     name: 'useCookie',
     category: 'state',
+    purpose: 'reading and writing cookies',
     summary: 'Read, write and delete a browser cookie as state.',
     description:
       'useCookie exposes a single document cookie as React state. It returns the current value plus setter and delete callbacks, accepts an expiry in days, and encodes values safely — handy for consent banners, locale preferences and anything the server also needs to read.',
@@ -167,11 +181,14 @@ export const hooks: HookEntry[] = [
     keywords: ['react cookie hook', 'document.cookie', 'consent banner', 'locale cookie'],
     related: ['use-local-storage', 'use-session-storage', 'use-is-client'],
     ssrSafe: true,
+    ssrNote:
+      'Returns null on the server because document.cookie is unavailable there; the first client render reads the real cookie. Gate cookie-dependent markup behind useIsClient, or read the cookie on the server, to avoid a hydration mismatch.',
   },
   {
     slug: 'use-debounce',
     name: 'useDebounce',
     category: 'state',
+    purpose: 'debouncing values',
     summary: 'Delay a fast-changing value until it settles.',
     description:
       'useDebounce returns a copy of a value that only updates after it has stopped changing for the given delay. Wrap a search input, a resize measurement or an autosave payload with it to cut network requests and expensive renders dramatically.',
@@ -189,6 +206,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-toggle',
     name: 'useToggle',
     category: 'state',
+    purpose: 'toggling booleans',
     summary: 'One-call boolean flip with explicit on and off.',
     description:
       'useToggle returns a boolean and a stable toggle function, plus explicit on and off setters. It is the smallest possible answer to "open/closed" state and keeps event handlers free of inline arrow functions that break memoisation.',
@@ -202,6 +220,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-previous',
     name: 'usePrevious',
     category: 'state',
+    purpose: 'tracking the previous value',
     summary: 'Remember the value a prop or state had last render.',
     description:
       'usePrevious stores the value from the previous render in a ref and returns it. Compare it against the current value to run transition-only effects, animate direction of change, or log exactly what a prop changed from and to.',
@@ -214,6 +233,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-step',
     name: 'useStep',
     category: 'state',
+    purpose: 'multi-step wizards',
     summary: 'Wizard step state with next, previous and canGo flags.',
     description:
       'useStep manages a bounded step index for wizards, onboarding flows and carousels. Alongside the current step it returns goToNextStep, goToPrevStep, reset, setStep and canGoToNextStep / canGoToPrevStep booleans for disabling controls.',
@@ -228,6 +248,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-form',
     name: 'useForm',
     category: 'forms-data',
+    purpose: 'form state and validation',
     summary: 'Controlled form state with validation and submit handling.',
     description:
       'useForm is a dependency-free form hook: it tracks values, errors, touched fields and isSubmitting, runs your validate function on change and submit, and hands you handleChange, handleBlur and handleSubmit to wire onto inputs, plus resetForm, setValues and setErrors. No schema library required.',
@@ -246,6 +267,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-pagination',
     name: 'usePagination',
     category: 'forms-data',
+    purpose: 'client-side pagination',
     summary: 'Slice an array into pages with navigation helpers.',
     description:
       'usePagination takes an array and a page size and returns currentData — the slice for the active page — plus currentPage, totalPages and next, prev and jump helpers. It is pure client-side pagination for data you already have in memory: tables, galleries and search results.',
@@ -258,6 +280,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-infinite-scroll',
     name: 'useInfiniteScroll',
     category: 'forms-data',
+    purpose: 'infinite scrolling',
     summary: 'Fire a callback when a sentinel element scrolls into view.',
     description:
       'useInfiniteScroll returns a ref you attach to a sentinel element at the end of your list. When that element enters the viewport the hook calls your loader, giving you IntersectionObserver-based infinite scrolling without scroll listeners or layout thrash.',
@@ -276,6 +299,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-fetch',
     name: 'useFetch',
     category: 'forms-data',
+    purpose: 'data fetching',
     summary: 'Declarative fetch with data, error and loading state.',
     description:
       'useFetch wraps the Fetch API in a hook that returns data, error and loading. It aborts in-flight requests when the URL changes or the component unmounts, so you never set state on an unmounted component or render a stale response.',
@@ -295,6 +319,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-click-outside',
     name: 'useClickOutside',
     category: 'dom',
+    purpose: 'detecting outside clicks',
     summary: 'Run a handler when a click lands outside an element.',
     description:
       'useClickOutside watches for mouse and touch events outside a ref and calls your handler. It is the standard way to dismiss dropdowns, popovers and modals, and it listens on both mousedown and touchstart so mobile behaves like desktop.',
@@ -313,6 +338,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-click-any-where',
     name: 'useClickAnyWhere',
     category: 'dom',
+    purpose: 'document-wide clicks',
     summary: 'Handle every click on the document.',
     description:
       'useClickAnyWhere attaches a document-level click handler that is cleaned up automatically. Use it for analytics, dismissing global overlays, or closing a command palette regardless of where the user clicked.',
@@ -325,6 +351,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-media-query',
     name: 'useMediaQuery',
     category: 'dom',
+    purpose: 'CSS media queries',
     summary: 'Subscribe to a CSS media query from JavaScript.',
     description:
       'useMediaQuery evaluates a CSS media query with matchMedia and re-renders when it changes. Read breakpoints, prefers-color-scheme or prefers-reduced-motion in JavaScript, with an SSR-safe false on the server so hydration stays clean.',
@@ -342,6 +369,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-on-screen',
     name: 'useOnScreen',
     category: 'dom',
+    purpose: 'element visibility',
     summary: 'Boolean that tells you whether an element is visible.',
     description:
       'useOnScreen returns true while the referenced element intersects the viewport. It is the simplest way to trigger scroll-reveal animations, lazy-load images or start a video only when the user can actually see it.',
@@ -355,6 +383,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-intersection-observer',
     name: 'useIntersectionObserver',
     category: 'dom',
+    purpose: 'IntersectionObserver',
     summary: 'Full IntersectionObserverEntry for an element.',
     description:
       'useIntersectionObserver gives you the raw IntersectionObserverEntry — intersectionRatio, boundingClientRect and all — with threshold, root, rootMargin and a freezeOnceVisible option. Reach for it when a plain boolean is not enough.',
@@ -373,6 +402,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-window-size',
     name: 'useWindowSize',
     category: 'dom',
+    purpose: 'window width and height',
     summary: 'Live viewport width and height.',
     description:
       'useWindowSize tracks window.innerWidth and innerHeight through a resize listener and returns them as state. Combine it with useDebounce for expensive layout maths, and rely on its undefined-on-server values to keep SSR output stable.',
@@ -385,6 +415,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-window-scroll',
     name: 'useWindowScroll',
     category: 'dom',
+    purpose: 'window scroll position',
     summary: 'Current window scroll offset, plus a scrollTo helper.',
     description:
       'useWindowScroll reports the page scroll position as x and y state and returns a scrollTo function that takes a y offset and an optional x. Use it to build sticky headers that shrink, back-to-top buttons and scroll progress indicators.',
@@ -392,11 +423,14 @@ export const hooks: HookEntry[] = [
     keywords: ['scroll position hook', 'scroll progress react', 'back to top button'],
     related: ['use-on-screen', 'use-scroll-lock', 'use-event-listener'],
     ssrSafe: true,
+    ssrNote:
+      'Returns { x: 0, y: 0 } on the server and the real scroll offset on the first client render. Render offset-dependent markup after hydration if the page can load already scrolled.',
   },
   {
     slug: 'use-document-title',
     name: 'useDocumentTitle',
     category: 'dom',
+    purpose: 'setting the document title',
     summary: 'Set document.title declaratively from a component.',
     description:
       'useDocumentTitle writes to document.title while a component is mounted. It is useful in client-rendered apps and modal flows where the framework has not already produced a title through metadata.',
@@ -409,6 +443,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-event-listener',
     name: 'useEventListener',
     category: 'dom',
+    purpose: 'typed event listeners',
     summary: 'Typed addEventListener that cleans itself up.',
     description:
       'useEventListener attaches a strongly typed listener to window, document or a ref and removes it on unmount. Handlers are kept in a ref so you always run the latest closure without re-binding the listener on every render.',
@@ -427,6 +462,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-hover',
     name: 'useHover',
     category: 'dom',
+    purpose: 'hover state',
     summary: 'Ref plus a boolean for pointer-over state.',
     description:
       'useHover returns a ref to attach and a boolean that is true while the pointer is over the element. It handles mouseenter and mouseleave for you, which keeps tooltips and hover previews out of render-blocking CSS hacks.',
@@ -440,6 +476,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-screen',
     name: 'useScreen',
     category: 'dom',
+    purpose: 'screen information',
     summary: 'The window.screen object as reactive state.',
     description:
       'useScreen exposes window.screen — width, height, availWidth, colorDepth and orientation — as state that updates on resize. It returns null during server rendering so your markup never depends on a value the server cannot know.',
@@ -447,11 +484,14 @@ export const hooks: HookEntry[] = [
     keywords: ['window.screen hook', 'screen resolution react', 'device screen size'],
     related: ['use-window-size', 'use-media-query', 'use-is-client'],
     ssrSafe: true,
+    ssrNote:
+      'Returns null on the server and window.screen on the first client render. Render screen-dependent markup after hydration (for example behind useIsClient) to avoid a hydration mismatch.',
   },
   {
     slug: 'use-mutation-observer',
     name: 'useMutationObserver',
     category: 'dom',
+    purpose: 'watching DOM mutations',
     summary: 'Watch DOM changes inside an element.',
     description:
       'useMutationObserver runs a callback whenever the observed subtree changes — attributes, child nodes or character data. It is the escape hatch for integrating third-party widgets and portals that mutate the DOM outside React.',
@@ -469,6 +509,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-script',
     name: 'useScript',
     category: 'dom',
+    purpose: 'loading external scripts',
     summary: 'Load an external script and track its status.',
     description:
       'useScript injects a third-party script tag once, deduplicates repeat calls for the same src, and reports idle, loading, ready or error. Gate analytics, payment SDKs and map libraries on the ready state instead of guessing with timeouts.',
@@ -488,6 +529,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-interval',
     name: 'useInterval',
     category: 'lifecycle',
+    purpose: 'intervals without stale closures',
     summary: 'setInterval that never goes stale, pausable with null.',
     description:
       'useInterval runs a callback on a fixed interval and always calls the latest version of it, solving the classic stale-closure bug. Pass null as the delay to pause the timer, and it clears itself on unmount.',
@@ -505,6 +547,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-timeout',
     name: 'useTimeout',
     category: 'lifecycle',
+    purpose: 'declarative timeouts',
     summary: 'Declarative setTimeout with automatic cleanup.',
     description:
       'useTimeout schedules a callback once after a delay, cancels it when the component unmounts, and restarts when the delay changes. Pass null to cancel — ideal for toast auto-dismiss and delayed tooltips.',
@@ -517,6 +560,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-countdown',
     name: 'useCountdown',
     category: 'lifecycle',
+    purpose: 'countdown timers',
     summary: 'Countdown timer with start, stop and reset.',
     description:
       'useCountdown counts down from a starting value at a configurable interval and exposes start, pause and reset controls plus an isCounting flag. Build OTP resend timers, checkout holds, quiz clocks and launch countdowns without hand-rolling interval bookkeeping.',
@@ -530,6 +574,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-is-mounted',
     name: 'useIsMounted',
     category: 'lifecycle',
+    purpose: 'checking if a component is mounted',
     summary: 'Callback that reports whether the component is still mounted.',
     description:
       'useIsMounted returns a stable function you can call inside async code to check whether the component is still on screen. Guard a setState after an await with it and the "state update on unmounted component" warning disappears.',
@@ -547,6 +592,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-is-client',
     name: 'useIsClient',
     category: 'lifecycle',
+    purpose: 'client-only rendering',
     summary: 'False during SSR, true after hydration.',
     description:
       'useIsClient returns false on the server and on the first client render, then true. Use it to defer browser-only UI until after hydration so React never reports a mismatch between server and client markup.',
@@ -564,6 +610,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-unmount',
     name: 'useUnmount',
     category: 'lifecycle',
+    purpose: 'unmount cleanup',
     summary: 'Run a function exactly once, on unmount.',
     description:
       'useUnmount runs cleanup when the component leaves the tree, always calling the latest callback. Flush analytics, abort a stream or release a lock without an empty-dependency useEffect whose closure has gone stale.',
@@ -576,6 +623,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-update-effect',
     name: 'useUpdateEffect',
     category: 'lifecycle',
+    purpose: 'skipping the first effect run',
     summary: 'useEffect that skips the first render.',
     description:
       'useUpdateEffect behaves exactly like useEffect but does not fire on mount. It is the right tool for reacting to a change — saving a filter the user edited, for instance — without firing on the initial value.',
@@ -592,6 +640,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-event',
     name: 'useEvent',
     category: 'lifecycle',
+    purpose: 'stable event callbacks',
     summary: 'A stable callback that always sees fresh state.',
     description:
       'useEvent returns a function whose identity never changes but whose body always reads the latest props and state. Pass it to memoised children and effect dependency arrays to stop needless re-renders without introducing stale closures.',
@@ -609,6 +658,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-isomorphic-layout-effect',
     name: 'useIsomorphicLayoutEffect',
     category: 'lifecycle',
+    purpose: 'SSR-safe layout effects',
     summary: 'useLayoutEffect on the client, useEffect on the server.',
     description:
       'useIsomorphicLayoutEffect picks useLayoutEffect in the browser and useEffect during server rendering, which removes the "useLayoutEffect does nothing on the server" warning while keeping synchronous DOM measurement where it matters.',
@@ -627,6 +677,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-copy-to-clipboard',
     name: 'useCopyToClipboard',
     category: 'sensors',
+    purpose: 'copying to the clipboard',
     summary: 'Copy text to the clipboard and read back what you copied.',
     description:
       'useCopyToClipboard returns the last copied value and an async copy function built on the Clipboard API. It resolves to a boolean so you can show a "Copied!" state, and fails gracefully when the page lacks clipboard permission.',
@@ -644,6 +695,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-online-state',
     name: 'useOnlineState',
     category: 'sensors',
+    purpose: 'online/offline status',
     summary: 'Track whether the browser is online.',
     description:
       'useOnlineState reads navigator.onLine and subscribes to the online and offline events. Show an offline banner, queue mutations, or pause polling the moment connectivity drops.',
@@ -656,11 +708,14 @@ export const hooks: HookEntry[] = [
     ],
     related: ['use-fetch', 'use-event-listener', 'use-is-client'],
     ssrSafe: true,
+    ssrNote:
+      'Returns true on the server and navigator.onLine on the first client render, so an offline visitor can see a hydration mismatch if the status changes the markup.',
   },
   {
     slug: 'use-geolocation',
     name: 'useGeolocation',
     category: 'sensors',
+    purpose: 'geolocation',
     summary: 'Watch the device position with loading and error state.',
     description:
       'useGeolocation subscribes to the Geolocation API and returns coordinates, accuracy, timestamp, loading and error. It accepts the standard PositionOptions and clears its watcher on unmount, so permission prompts and battery drain stay under control.',
@@ -678,6 +733,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-audio',
     name: 'useAudio',
     category: 'sensors',
+    purpose: 'audio playback',
     summary: 'Control an audio element with play, pause and volume.',
     description:
       'useAudio creates and manages an HTMLAudioElement, returning playing and volume state alongside play, pause, toggle and setVolume controls plus the underlying audio element. Build a compact player without wiring media events by hand.',
@@ -690,6 +746,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-mouse',
     name: 'useMouse',
     category: 'sensors',
+    purpose: 'mouse position',
     summary: 'Pointer position, page-wide or relative to an element.',
     description:
       'useMouse tracks the cursor and returns both page coordinates and element-relative coordinates when you pass a ref. It powers spotlight effects, custom cursors, tooltips that follow the pointer and drag previews.',
@@ -702,6 +759,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-touch',
     name: 'useTouch',
     category: 'sensors',
+    purpose: 'touch events',
     summary: 'Raw touch state for an element.',
     description:
       'useTouch reports whether the element is being touched and where, tracking touchstart, touchmove and touchend. Use it when you need finer control than a swipe abstraction gives you — drawing surfaces, sliders and pinch targets.',
@@ -714,6 +772,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-swipe',
     name: 'useSwipe',
     category: 'sensors',
+    purpose: 'swipe gestures',
     summary: 'Detect swipe direction and distance on touch devices.',
     description:
       'useSwipe turns raw touch events into a direction and distance once a movement crosses your threshold. Wire it to carousels, dismissible cards, mobile drawers and tab strips in a couple of lines.',
@@ -731,6 +790,7 @@ export const hooks: HookEntry[] = [
     slug: 'use-scroll-lock',
     name: 'useScrollLock',
     category: 'sensors',
+    purpose: 'locking body scroll',
     summary: 'Freeze body scrolling while an overlay is open.',
     description:
       'useScrollLock disables scrolling on the document body and compensates for the scrollbar so the page does not shift. Toggle it with a boolean argument to keep modals, drawers and mobile menus from scrolling the content behind them.',

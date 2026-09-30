@@ -48,8 +48,8 @@ const FALLBACK: DanixSoftFamily = {
       "name": "Framewise",
       "tagline": "AI website builder: describe a business, get a finished site",
       "category": "AI product",
-      "url": "https://www.danixsoft.com/case-studies/framewise-ai-website-builder",
-      "live": false
+      "url": "https://framewise.danixsoft.com",
+      "live": true
     },
     {
       "id": "repo-dive",
@@ -104,24 +104,24 @@ const FALLBACK: DanixSoftFamily = {
       "name": "Duesheet",
       "tagline": "Proposals, invoices and a client portal for freelancers who bill internationally",
       "category": "SaaS product",
-      "url": "https://www.danixsoft.com/case-studies/duesheet-freelancer-invoicing",
-      "live": false
+      "url": "https://duesheet.danixsoft.com",
+      "live": true
     },
     {
       "id": "showup",
       "name": "Showup",
       "tagline": "Online booking and WhatsApp reminders for private clinics",
       "category": "SaaS product",
-      "url": "https://www.danixsoft.com/case-studies/showup-clinic-booking-reminders",
-      "live": false
+      "url": "https://showup.danixsoft.com",
+      "live": true
     },
     {
       "id": "praiseboard",
       "name": "Praiseboard",
       "tagline": "Collect video and text testimonials with one link and embed them anywhere",
       "category": "SaaS product",
-      "url": "https://www.danixsoft.com/case-studies/praiseboard-testimonial-collection",
-      "live": false
+      "url": "https://praiseboard.danixsoft.com",
+      "live": true
     }
   ]
 };

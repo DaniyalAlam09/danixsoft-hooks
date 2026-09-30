@@ -74,6 +74,7 @@ export default function InstallTabs({ className }: { className?: string }) {
         <button
           type="button"
           onClick={copy}
+          data-track="Install"
           aria-label={copied ? 'Command copied' : 'Copy install command'}
           className="shrink-0 rounded-md border border-code-border p-1.5 text-code-fg/60 transition-colors hover:text-code-fg"
         >

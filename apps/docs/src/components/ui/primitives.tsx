@@ -52,11 +52,14 @@ export function LinkButton({
   href,
   external,
   children,
+  'data-track': dataTrack,
   ...props
 }: ButtonStyleProps &
   Omit<ComponentProps<typeof Link>, 'href'> & {
     href: string;
     external?: boolean;
+    /** CTA label recorded by the DanixSoft analytics tracker on click. */
+    'data-track'?: string;
   }) {
   const classes = cn(buttonClass({ variant, size }), className);
   if (external || href.startsWith('http')) {
@@ -66,13 +69,14 @@ export function LinkButton({
         target="_blank"
         rel="noopener noreferrer"
         className={classes}
+        data-track={dataTrack}
       >
         {children}
       </a>
     );
   }
   return (
-    <Link href={href} className={classes} {...props}>
+    <Link href={href} className={classes} data-track={dataTrack} {...props}>
       {children}
     </Link>
   );

@@ -28,6 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: url('/guides'), lastModified: lastModified(docs('content/guides.ts')), changeFrequency: 'weekly', priority: 0.8 },
     { url: url('/compare'), lastModified: lastModified(docs('content/comparisons.ts')), changeFrequency: 'monthly', priority: 0.8 },
     { url: url('/faq'), lastModified: lastModified(docs('content/faq.ts')), changeFrequency: 'monthly', priority: 0.7 },
+    { url: url('/more-from-danixsoft'), lastModified: lastModified(docs('app/(marketing)/more-from-danixsoft'), docs('lib/danixsoft-family.ts')), changeFrequency: 'monthly', priority: 0.3 },
     { url: url('/api-reference'), lastModified: lastModified(librarySource), changeFrequency: 'monthly', priority: 0.6 },
   ];
 

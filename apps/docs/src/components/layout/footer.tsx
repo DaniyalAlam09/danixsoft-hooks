@@ -3,7 +3,6 @@ import { siteConfig } from '@/lib/site';
 import { hookCategories, hooksByCategory, hookCount } from '@/lib/hooks-registry';
 import { GitHubIcon, NpmIcon } from '@/components/ui/icons';
 import Logo from './logo';
-import MoreFromDanixSoft from './more-from-danixsoft';
 
 const resources = [
   { title: 'Documentation', href: '/docs' },
@@ -12,6 +11,7 @@ const resources = [
   { title: 'Comparisons', href: '/compare' },
   { title: 'API Reference', href: '/api-reference' },
   { title: 'FAQ', href: '/faq' },
+  { title: 'More from DanixSoft', href: '/more-from-danixsoft' },
 ];
 
 const guides = [
@@ -28,7 +28,7 @@ const guides = [
  * category hubs and top guides, which is the cheapest internal-linking win
  * a documentation site has.
  */
-export default async function Footer() {
+export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
@@ -118,8 +118,6 @@ export default async function Footer() {
             </ul>
           </div>
         </div>
-
-        <MoreFromDanixSoft />
 
         <div className="mt-12 flex flex-col gap-4 border-t border-border pt-6 text-sm text-fg-subtle sm:flex-row sm:items-center sm:justify-between">
           <p>

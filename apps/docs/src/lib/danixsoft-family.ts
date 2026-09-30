@@ -30,7 +30,7 @@ export interface DanixSoftFamily {
 
 const SOURCE = "https://www.danixsoft.com/products.json";
 
-// Snapshot of products.json (2026-09-28).
+// Snapshot of products.json (2026-09-30).
 const FALLBACK: DanixSoftFamily = {
   "company": {
     "name": "DanixSoft",
@@ -82,6 +82,46 @@ const FALLBACK: DanixSoftFamily = {
       "category": "SaaS product",
       "url": "https://outreach.danixsoft.com",
       "live": true
+    },
+    {
+      "id": "chatcart",
+      "name": "Chatcart",
+      "tagline": "Order management for shops that sell on WhatsApp and Instagram",
+      "category": "SaaS product",
+      "url": "https://chatcart.danixsoft.com",
+      "live": true
+    },
+    {
+      "id": "rollcall",
+      "name": "RollCall",
+      "tagline": "Fee vouchers, payments and WhatsApp reminders for private schools",
+      "category": "SaaS product",
+      "url": "https://rollcall.danixsoft.com",
+      "live": true
+    },
+    {
+      "id": "duesheet",
+      "name": "Duesheet",
+      "tagline": "Proposals, invoices and a client portal for freelancers who bill internationally",
+      "category": "SaaS product",
+      "url": "https://www.danixsoft.com/case-studies/duesheet-freelancer-invoicing",
+      "live": false
+    },
+    {
+      "id": "showup",
+      "name": "Showup",
+      "tagline": "Online booking and WhatsApp reminders for private clinics",
+      "category": "SaaS product",
+      "url": "https://www.danixsoft.com/case-studies/showup-clinic-booking-reminders",
+      "live": false
+    },
+    {
+      "id": "praiseboard",
+      "name": "Praiseboard",
+      "tagline": "Collect video and text testimonials with one link and embed them anywhere",
+      "category": "SaaS product",
+      "url": "https://www.danixsoft.com/case-studies/praiseboard-testimonial-collection",
+      "live": false
     }
   ]
 };

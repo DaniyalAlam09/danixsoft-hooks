@@ -183,7 +183,7 @@ export default function Home() {
               </p>
 
               <div className="mb-8 flex flex-col gap-3 sm:flex-row">
-                <LinkButton href="/docs" size="lg">
+                <LinkButton href="/docs" size="lg" data-track="Get started">
                   Get started
                   <ArrowRightIcon className="h-4 w-4" />
                 </LinkButton>
@@ -195,6 +195,7 @@ export default function Home() {
                   variant="ghost"
                   size="lg"
                   external
+                  data-track="GitHub"
                 >
                   <GitHubIcon className="h-4 w-4" />
                   GitHub
@@ -464,7 +465,7 @@ export default function Home() {
             </p>
             <InstallTabs className="mx-auto mb-8 max-w-lg text-left" />
             <div className="flex flex-wrap justify-center gap-3">
-              <LinkButton href="/docs" size="lg">
+              <LinkButton href="/docs" size="lg" data-track="Read the docs">
                 Read the docs
                 <ArrowRightIcon className="h-4 w-4" />
               </LinkButton>
@@ -473,6 +474,7 @@ export default function Home() {
                 variant="secondary"
                 size="lg"
                 external
+                data-track="GitHub"
               >
                 <GitHubIcon className="h-4 w-4" />
                 Star on GitHub

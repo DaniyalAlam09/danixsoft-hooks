@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
+import Script from 'next/script';
 import './globals.css';
 import { packageVersion } from '@/lib/package-info';
 
@@ -146,6 +147,8 @@ export default function RootLayout({
 
           <Footer />
         </ThemeProvider>
+        {/* DanixSoft's own cookieless analytics (admin.danixsoft.com). */}
+        <Script src="https://admin.danixsoft.com/t.js" data-site="danixsoft-hooks" strategy="afterInteractive" />
       </body>
     </html>
   );

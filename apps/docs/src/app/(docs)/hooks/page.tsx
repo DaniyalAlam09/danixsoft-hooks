@@ -11,7 +11,21 @@ import {
 import { siteConfig } from '@/lib/site';
 import Breadcrumbs from '@/components/layout/breadcrumbs';
 import JsonLd from '@/components/ui/json-ld';
+import Link from 'next/link';
 import HooksDirectory from '@/components/docs/hooks-directory';
+
+/** "Which hook do I need?": the common tasks, mapped to hooks. */
+const TASKS: { task: string; slugs: string[] }[] = [
+  { task: 'Persist state across reloads', slugs: ['use-local-storage', 'use-session-storage', 'use-cookie'] },
+  { task: 'Respond to screen size or user preferences', slugs: ['use-media-query', 'use-window-size'] },
+  { task: 'Close a menu or modal on an outside click', slugs: ['use-click-outside'] },
+  { task: 'Wait for typing to stop before searching', slugs: ['use-debounce'] },
+  { task: 'Know when an element scrolls into view', slugs: ['use-intersection-observer', 'use-on-screen', 'use-infinite-scroll'] },
+  { task: 'Run code on a timer', slugs: ['use-interval', 'use-timeout', 'use-countdown'] },
+  { task: 'Fetch data with loading and error state', slugs: ['use-fetch'] },
+  { task: 'Manage a form with validation', slugs: ['use-form'] },
+  { task: 'Avoid hydration mismatches in Next.js', slugs: ['use-is-client', 'use-isomorphic-layout-effect'] },
+];
 
 export const metadata: Metadata = buildMetadata({
   title: `All ${hooks.length} React Hooks — Complete Directory | @danixsoft/hooks`,
@@ -87,6 +101,45 @@ export default function HooksIndex() {
             signature — and every one is dependency-free and SSR-safe.
           </p>
         </header>
+
+        <section aria-labelledby="which-hook" className="mb-10">
+          <h2 id="which-hook" className="mb-4 text-xl font-bold tracking-tight text-fg">
+            Which hook do I need?
+          </h2>
+          <div className="overflow-x-auto rounded-xl border border-border">
+            <table className="w-full border-collapse text-left text-[14px]">
+              <thead className="bg-bg-subtle text-fg">
+                <tr>
+                  <th scope="col" className="px-4 py-2.5 font-semibold">I want to…</th>
+                  <th scope="col" className="px-4 py-2.5 font-semibold">Use</th>
+                </tr>
+              </thead>
+              <tbody className="text-fg-muted">
+                {TASKS.map(({ task, slugs }) => (
+                  <tr key={task} className="border-t border-border align-top">
+                    <th scope="row" className="px-4 py-2.5 font-normal">{task}</th>
+                    <td className="px-4 py-2.5">
+                      {slugs
+                        .map((slug) => hooks.find((hook) => hook.slug === slug))
+                        .filter((hook) => hook !== undefined)
+                        .map((hook, index) => (
+                          <span key={hook.slug}>
+                            {index > 0 && ', '}
+                            <Link
+                              href={`/${hook.slug}`}
+                              className="font-mono text-[13px] text-accent underline decoration-accent/30 underline-offset-[3px]"
+                            >
+                              {hook.name}
+                            </Link>
+                          </span>
+                        ))}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
 
         <Suspense fallback={<div className="h-32" />}>
           <HooksDirectory />

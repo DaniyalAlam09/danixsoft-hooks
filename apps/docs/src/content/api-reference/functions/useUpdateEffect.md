@@ -4,6 +4,8 @@
 
 > **useUpdateEffect**(`effect`, `deps?`): `void`
 
+Like useEffect, but skips the first render (also under StrictMode).
+
 ## Parameters
 
 ### effect

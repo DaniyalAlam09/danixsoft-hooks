@@ -90,7 +90,7 @@ export const faqGroups: FaqGroup[] = [
       {
         question: 'Will these hooks cause hydration mismatches?',
         answer:
-          'No. Every hook that reads a browser API returns a server-safe value during the initial render and only reads the real value in an effect, which runs exclusively in the browser. That is what guarantees the server HTML and the first client render agree.',
+          'No. Storage and cookie hooks (useLocalStorage, useSessionStorage, useCookie) are built on useSyncExternalStore with a server snapshot, so the server and the hydrating client render the same default and the stored value is applied right after. Other hooks that read a browser API return a server-safe value first and read the real value in an effect. The storage and cookie hooks have hydration tests in the test suite.',
       },
       {
         question: 'Why does useWindowSize return undefined at first?',

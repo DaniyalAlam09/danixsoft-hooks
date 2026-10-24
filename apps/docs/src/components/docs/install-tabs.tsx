@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { CheckIcon, CopyIcon } from '@/components/ui/icons';
 import { cn } from '@/lib/cn';
+import { track } from '@/lib/track';
 
 const managers = [
   { id: 'npm', command: 'npm install @danixsoft/hooks' },
@@ -22,6 +23,7 @@ export default function InstallTabs({ className }: { className?: string }) {
     try {
       await navigator.clipboard.writeText(command);
       setCopied(true);
+      track('copy_install', { manager: active });
       setTimeout(() => setCopied(false), 2000);
     } catch {
       /* clipboard blocked — the command is still selectable */
@@ -40,17 +42,36 @@ export default function InstallTabs({ className }: { className?: string }) {
         aria-label="Package manager"
         className="flex border-b border-code-border bg-code-chrome px-1.5"
       >
-        {managers.map((manager) => (
+        {managers.map((manager, index) => (
           <button
             key={manager.id}
+            type="button"
             role="tab"
             aria-selected={active === manager.id}
+            tabIndex={active === manager.id ? 0 : -1}
             onClick={() => setActive(manager.id)}
+            onKeyDown={(event) => {
+              // Roving tabindex: arrow keys move between package managers.
+              const step =
+                event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+              if (event.key === 'Home' || event.key === 'End' || step !== 0) {
+                event.preventDefault();
+                const next =
+                  event.key === 'Home'
+                    ? 0
+                    : event.key === 'End'
+                      ? managers.length - 1
+                      : (index + step + managers.length) % managers.length;
+                setActive(managers[next].id);
+                const tabs = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+                tabs?.[next]?.focus();
+              }
+            }}
             className={cn(
               'relative px-3.5 py-2.5 font-mono text-[13px] transition-colors',
               active === manager.id
                 ? 'text-code-fg'
-                : 'text-code-fg/45 hover:text-code-fg/75',
+                : 'text-code-fg/70 hover:text-code-fg',
             )}
           >
             {manager.id}

@@ -1,22 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore } from 'react';
 
-export function useOnlineState() {
-  const [isOnline, setIsOnline] = useState(
-    typeof window !== 'undefined' ? window.navigator.onLine : true
-  );
+function subscribe(onChange: () => void) {
+  window.addEventListener('online', onChange);
+  window.addEventListener('offline', onChange);
+  return () => {
+    window.removeEventListener('online', onChange);
+    window.removeEventListener('offline', onChange);
+  };
+}
 
-  useEffect(() => {
-    const goOnline = () => setIsOnline(true);
-    const goOffline = () => setIsOnline(false);
+const getSnapshot = () => window.navigator.onLine;
+const getServerSnapshot = () => true;
 
-    window.addEventListener('online', goOnline);
-    window.addEventListener('offline', goOffline);
-
-    return () => {
-      window.removeEventListener('online', goOnline);
-      window.removeEventListener('offline', goOffline);
-    };
-  }, []);
-
-  return isOnline;
+/**
+ * Whether the browser reports a network connection (`navigator.onLine`).
+ *
+ * Returns `true` on the server and during hydration, then the real value.
+ */
+export function useOnlineState(): boolean {
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

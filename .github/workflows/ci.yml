@@ -45,3 +45,42 @@ jobs:
     # the docs hook registry must match the package's real exports.
     - name: Verify Docs Registry Matches Package Exports
       run: npm run check:registry --workspace=docs
+
+    - name: Bundle size budget
+      run: npm run size --workspace=@danixsoft/hooks
+
+    - name: Check the published tarball
+      run: npm pack --dry-run --workspace=@danixsoft/hooks
+
+  # The library supports React >= 18; run the suite against both majors.
+  react-19:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    - run: npm install
+    - name: Install React 19 for the hooks workspace (not saved)
+      run: npm install --no-save --workspace=@danixsoft/hooks react@19 react-dom@19
+    - name: Print React version
+      run: node -e "console.log('React', require('./packages/hooks/node_modules/react/package.json').version)"
+    - name: Test on React 19
+      run: npm run test --workspace=@danixsoft/hooks
+
+  docs-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # the sitemap reads last-modified dates from git
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    - run: npm install
+    - name: Lint docs
+      run: npm run lint --workspace=docs
+    - name: Build docs
+      run: npm run build --workspace=docs

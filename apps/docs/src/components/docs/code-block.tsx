@@ -1,5 +1,15 @@
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+// One Dark's comment grey (#5c6370) is 3.3:1 on our code background; lift it
+// to pass WCAG AA (4.5:1) without changing the rest of the theme.
+const ACCESSIBLE_COMMENT = '#8b919c';
+const codeTheme = {
+  ...oneDark,
+  comment: { ...oneDark.comment, color: ACCESSIBLE_COMMENT },
+  prolog: { ...oneDark.prolog, color: ACCESSIBLE_COMMENT },
+  cdata: { ...oneDark.cdata, color: ACCESSIBLE_COMMENT },
+};
 import { cn } from '@/lib/cn';
 import CopyButton from './copy-button';
 
@@ -18,6 +28,8 @@ interface CodeBlockProps {
   title?: string | null;
   showLineNumbers?: boolean;
   className?: string;
+  /** Hook the code belongs to, reported with the copy_code event. */
+  hook?: string;
 }
 
 export default function CodeBlock({
@@ -26,6 +38,7 @@ export default function CodeBlock({
   title = 'Usage Example',
   showLineNumbers = true,
   className,
+  hook,
 }: CodeBlockProps) {
   return (
     <div
@@ -42,24 +55,24 @@ export default function CodeBlock({
               <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
               <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
             </div>
-            <span className="truncate font-mono text-xs text-code-fg/55">
+            <span className="truncate font-mono text-xs text-code-fg/70">
               {title}
             </span>
           </div>
-          <CopyButton text={code.trim()} />
+          <CopyButton text={code.trim()} hook={hook} />
         </div>
       )}
 
       {title === null && (
         <div className="absolute right-2.5 top-2.5 z-10 opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100">
-          <CopyButton text={code.trim()} />
+          <CopyButton text={code.trim()} hook={hook} />
         </div>
       )}
 
       <div className="overflow-x-auto custom-scrollbar">
         <SyntaxHighlighter
           language={language}
-          style={oneDark}
+          style={codeTheme}
           customStyle={{
             margin: 0,
             padding: '1.25rem',
@@ -75,7 +88,8 @@ export default function CodeBlock({
             minWidth: '2.25em',
             paddingRight: '1.25em',
             color: 'var(--code-fg)',
-            opacity: 0.28,
+            // Decorative, but kept readable (>= 3:1 on the code background).
+            opacity: 0.5,
             textAlign: 'right',
             userSelect: 'none',
           }}

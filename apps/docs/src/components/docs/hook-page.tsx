@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import {
@@ -27,6 +29,7 @@ import {
   hooksWithoutDemo,
   hooksWithSandbox,
 } from '@/content/hook-examples';
+import { registryUrl } from '@/lib/hook-registry-items';
 import CodeBlock from './code-block';
 import SandboxEmbed from './sandbox-embed';
 
@@ -37,6 +40,7 @@ const TOC = [
   { id: 'demo', text: 'Live demo', level: 2 as const },
   { id: 'signature', text: 'API', level: 2 as const },
   { id: 'ssr', text: 'SSR notes', level: 2 as const },
+  { id: 'source', text: 'Source', level: 2 as const },
   { id: 'when-to-use', text: 'When to use it', level: 2 as const },
   { id: 'related', text: 'Related hooks', level: 2 as const },
 ];
@@ -44,6 +48,19 @@ const TOC = [
 const h2 =
   'anchor-heading mt-14 mb-4 border-t border-border pt-10 text-2xl font-bold tracking-tight text-fg';
 const prose = 'text-[15.5px] leading-relaxed text-fg-muted';
+/**
+ * The hook's own source file, read at build time (pages are static). Returns
+ * null if the file is missing so a docs build never fails over it.
+ */
+function readHookSource(name: string): string | null {
+  try {
+    const file = path.join(process.cwd(), '../../packages/hooks/src', `${name}.ts`);
+    return fs.readFileSync(file, 'utf8');
+  } catch {
+    return null;
+  }
+}
+
 const inlineCode =
   'rounded border border-border bg-bg-muted px-1.5 py-0.5 font-mono text-[13px] text-accent-soft-fg';
 
@@ -81,7 +98,10 @@ export default function HookPage({
   const dateModified = hookLastModified(hook.slug, hook.name);
   // Plain-language server-rendering behaviour, shown on the page and reused
   // as the FAQ answer so the structured data matches what readers see.
-  const ssrSummary = `${hook.name} is safe to import and call during server rendering: browser-only APIs are only touched inside effects or behind a typeof window check, so it never throws on the server. In the Next.js App Router, call it from a component marked "use client".`;
+  const ssrSummary = `${hook.name} is safe to import and call during server rendering: browser-only APIs are only touched inside effects, store subscriptions or behind a typeof window check, so it never throws on the server. In the Next.js App Router, call it from a component marked "use client".`;
+  const source = readHookSource(hook.name);
+  const sourceUrl = `${siteConfig.links.github}/blob/main/packages/hooks/src/${hook.name}.ts`;
+  const editUrl = `${siteConfig.links.github}/edit/main/packages/hooks/src/${hook.name}.ts`;
 
   const faqs = [
     {
@@ -186,6 +206,18 @@ export default function HookPage({
             title={null}
             showLineNumbers={false}
           />
+          <p className={`mb-1 mt-5 ${prose}`}>
+            Or copy just this hook into your project with the shadcn CLI. It
+            lands in your hooks folder as plain source you own, with no package
+            dependency.
+          </p>
+          <CodeBlock
+            code={`npx shadcn@latest add ${registryUrl(hook.slug)}`}
+            language="bash"
+            title={null}
+            showLineNumbers={false}
+            hook={hook.name}
+          />
 
           <h2 id="usage" className={h2}>
             Usage example
@@ -194,7 +226,7 @@ export default function HookPage({
             A minimal, copy-pasteable example of {hook.name} in a React
             component.
           </p>
-          <CodeBlock code={example} title={`${hook.name}.example.tsx`} />
+          <CodeBlock code={example} title={`${hook.name}.example.tsx`} hook={hook.name} />
 
           {hasDemo && (
             <>
@@ -211,7 +243,7 @@ export default function HookPage({
           )}
 
           {children}
-          {hasSandbox && <SandboxEmbed code={example} />}
+          {hasSandbox && <SandboxEmbed code={example} hook={hook.name} />}
 
           <h2 id="signature" className={h2}>
             API
@@ -281,6 +313,50 @@ export default function HookPage({
           </h2>
           <p className={`mb-3 ${prose}`}>{ssrSummary}</p>
           {hook.ssrNote && <p className={`mb-3 ${prose}`}>{hook.ssrNote}</p>}
+
+          <h2 id="source" className={h2}>
+            Source
+          </h2>
+          <p className={`mb-3 ${prose}`}>
+            Prefer no dependency? Copy the file into your project; it only
+            imports from React
+            {source?.includes("from './") ? ' and the sibling files it names' : ''}.
+            {' '}
+            <a
+              href={sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-accent underline decoration-accent/30 underline-offset-[3px]"
+            >
+              View on GitHub
+            </a>
+            {' · '}
+            <a
+              href={editUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-accent underline decoration-accent/30 underline-offset-[3px]"
+            >
+              Edit on GitHub
+            </a>
+          </p>
+          {source && (
+            <details className="group rounded-xl border border-border bg-surface">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-3.5 font-mono text-sm font-semibold text-fg marker:hidden">
+                <span>{hook.name}.ts</span>
+                <span aria-hidden className="text-accent transition-transform group-open:rotate-45">
+                  +
+                </span>
+              </summary>
+              <CodeBlock
+                code={source}
+                language="typescript"
+                title={`src/${hook.name}.ts`}
+                hook={hook.name}
+                className="mx-3 mb-3 mt-0"
+              />
+            </details>
+          )}
 
           <h2 id="when-to-use" className={h2}>
             When to use it
@@ -406,7 +482,7 @@ export default function HookPage({
           </div>
 
           <a
-            href={`${siteConfig.links.github}/blob/main/packages/hooks/src/${hook.name}.ts`}
+            href={sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-6 flex items-center gap-2 text-[13px] text-fg-muted transition-colors hover:text-accent"

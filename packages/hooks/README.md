@@ -23,21 +23,25 @@ Stop copying and pasting the same utility functions across projects. Get instant
 
 * **44 hooks** for state, storage, forms, DOM, timers, lifecycle and device sensors.
 
-* **🌳 Tree-shakeable:** Import only what you need. Your final bundle size remains microscopic.
+* **🌳 Tree-shakeable:** ESM build with `"sideEffects": false`, so bundlers drop the hooks you don't import.
 * **🛡️ TypeScript First:** Written entirely in TypeScript. Enjoy full autocomplete and type safety.
 * **🪶 Zero Dependencies:** We don't rely on any third-party libraries. Built entirely on React primitives.
-* **🚀 SSR Compatible:** Works flawlessly with Next.js and Remix Server-Side Rendering (no `window is not defined` errors).
+* **🚀 SSR Compatible:** No `window is not defined` errors in Next.js or Remix, and storage hooks hydrate without mismatches.
 * **⚡ Highly Optimized:** Uses `useRef` callbacks to prevent stale closures and unnecessary re-renders.
 
 ## ⚖️ Why @danixsoft/hooks?
 
-| Feature | `@danixsoft/hooks` | `usehooks-ts` | `react-use` |
-|---------|--------------------|---------------|-------------|
-| **Bundle Size (total)** | **~3.5 kB** | ~8.0 kB | ~31 kB |
-| **Dependencies** | **0** | 0 | 11 |
-| **SSR / Next.js Ready** | ✅ **Native** (no hydration mismatch) | ⚠️ Requires configuration | ⚠️ Prone to window errors |
-| **Tree-shakeable** | ✅ **100%** granular exports | ✅ Yes | ⚠️ Varies |
-| **TypeScript Type-safety**| ✅ **Strictly Typed** | ✅ Yes | ⚠️ Legacy Types |
+Numbers below are from [bundlephobia](https://bundlephobia.com) (minified + gzipped, whole package) on 24 Oct 2026. Check them yourself; they change with every release.
+
+| | `@danixsoft/hooks` 0.2.5 | `usehooks-ts` 3.1.1 | `react-use` 17.6.1 |
+|---|---|---|---|
+| **Size, whole package (min + gzip)** | 4.6 kB | 5.2 kB | 22.1 kB |
+| **Runtime dependencies** | 0 | 1 | 14 |
+| **Hooks** | 44 | ~33 | 100+ |
+
+With tree-shaking (ESM build, `"sideEffects": false`) you only ship the hooks you import, so the real cost in your app is usually far below the totals above.
+
+**SSR.** `useLocalStorage`, `useSessionStorage` and `useCookie` are built on `useSyncExternalStore` with a server snapshot: the server and the hydrating client render the same default, then the stored value is applied, so there is no hydration mismatch. This is covered by hydration tests (`tests/useLocalStorage.test.ts` and friends). Other browser hooks return a documented server value (for example `undefined` or `false`) and read the real value after mount; each hook's docs page has an "SSR notes" section.
 
 ## 📦 Installation
 

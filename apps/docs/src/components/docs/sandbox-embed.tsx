@@ -2,9 +2,12 @@
 
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
+import { track } from '@/lib/track';
 
 interface SandboxEmbedProps {
   code: string;
+  /** Hook name reported with the open_sandbox event. */
+  hook?: string;
   dependencies?: Record<string, string>;
 }
 
@@ -53,6 +56,7 @@ function Placeholder({
 /** Live, editable example, loaded on demand. Follows the site theme so it never clashes. */
 export default function SandboxEmbed({
   code,
+  hook,
   dependencies = {},
 }: SandboxEmbedProps) {
   const [open, setOpen] = useState(false);
@@ -80,7 +84,10 @@ export default function SandboxEmbed({
       ) : (
         <Placeholder
           label="Open the live, editable sandbox"
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setOpen(true);
+            track('open_sandbox', hook ? { hook } : undefined);
+          }}
         />
       )}
     </div>

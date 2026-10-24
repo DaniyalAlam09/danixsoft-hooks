@@ -47,6 +47,10 @@ export function GET() {
     `Every hook is a named export from the package root. There are no deep import paths: \`import { useLocalStorage } from '${siteConfig.package}'\`. In the Next.js App Router, the calling component must carry the "use client" directive.`,
   );
   lines.push('');
+  lines.push(
+    `To copy a single hook into a project as source instead (no npm dependency), use the shadcn CLI with the hook's registry item: \`npx shadcn@latest add ${url('/r/use-local-storage.json')}\`. Every hook has one at ${url('/r/<hook-slug>.json')}; the index is ${url('/r/registry.json')}. A plain-Markdown version of every hook page is at ${url('/<hook-slug>.md')}, for example ${url('/use-debounce.md')}.`,
+  );
+  lines.push('');
 
   lines.push('## Key pages');
   lines.push('');
@@ -71,6 +75,9 @@ export function GET() {
   );
   lines.push(
     `- [llms-full.txt](${url('/llms-full.txt')}): every hook signature in one file.`,
+  );
+  lines.push(
+    `- [llms-hooks.txt](${url('/llms-hooks.txt')}) and [llms-guides.txt](${url('/llms-guides.txt')}): llms-full.txt split in two, for tools that truncate long files.`,
   );
   lines.push('');
 

@@ -6,8 +6,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Breaking (pre-1.0 minor)
+- `useLocalStorage`, `useSessionStorage` and `useCookie` render `initialValue` /
+  `null` on the server **and during hydration**, then apply the stored value
+  right after. This removes the hydration mismatch they caused whenever a value
+  was stored. Client-only renders still read the stored value immediately.
+
+- `useMediaQuery`, `useWindowSize`, `useOnlineState`, `useScreen` and
+  `useWindowScroll` return their server value during hydration and the real
+  value right after. Client-only renders get the real value on the first render
+  (previously `useMediaQuery` and `useWindowSize` always started at
+  `false` / `undefined`).
+
 ### Added
-- Boilerplate entries for upcoming changes.
+- `useLocalStorage` / `useSessionStorage`: `removeValue()` as the third tuple
+  item, and `{ serializer, deserializer }` options.
+- `useCookie`: `{ path, domain, sameSite, secure }` options.
+- `useMediaQuery(query, { defaultValue })`.
+- `useFetch`: `null` URL / `enabled: false` to skip, `refetch()`, `parse`.
+- `useClickAnywhere`, an alias of `useClickAnyWhere` with conventional casing.
+- Tests for all 44 hooks: a server-render test for every export, hydration
+  tests for storage, cookie, media and window hooks, StrictMode tests, and CI
+  runs on React 18 and React 19.
+
+### Fixed
+- Storage setters are stable across renders, and functional updates use the
+  latest stored value, so several updates in one tick all apply.
+- Cross-tab removals and `localStorage.clear()` now reset the value.
+- Corrupt stored JSON falls back to `initialValue` instead of throwing.
+- Failed storage writes (quota, private mode) are kept in memory.
+- `useCookie` matches the cookie name exactly and URI-encodes values.
+- `useUpdateEffect` no longer fires on mount under StrictMode.
+- `useCountdown` calls `onEnd` once, and inline options no longer restart it.
+- `useAudio` handles a rejected `play()` (autoplay policy).
+- `useFetch` no longer refetches for an equal inline options object.
 
 ## [0.2.5] - 2026-09-06
 ### Changed

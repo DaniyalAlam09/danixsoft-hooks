@@ -1,16 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore } from 'react';
 
-export function useScreen() {
-  const [screen, setScreen] = useState<Screen | null>(() => 
-    typeof window !== 'undefined' ? window.screen : null
-  );
+function subscribe(onChange: () => void) {
+  window.addEventListener('resize', onChange);
+  window.addEventListener('orientationchange', onChange);
+  return () => {
+    window.removeEventListener('resize', onChange);
+    window.removeEventListener('orientationchange', onChange);
+  };
+}
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const handleResize = () => setScreen(window.screen);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+// window.screen is one mutable object, so the snapshot is a key built from
+// the values that change; React re-renders whenever the key changes.
+function getSnapshot(): string {
+  const s = window.screen;
+  return [s.width, s.height, s.availWidth, s.availHeight, s.orientation?.type ?? ''].join('|');
+}
 
-  return screen;
+const getServerSnapshot = () => '';
+
+/**
+ * The `window.screen` object, re-rendering when the screen size or
+ * orientation changes. Returns `null` on the server and during hydration.
+ */
+export function useScreen(): Screen | null {
+  const key = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  return key === '' ? null : window.screen;
 }

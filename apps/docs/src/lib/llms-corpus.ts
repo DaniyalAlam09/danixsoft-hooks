@@ -1,0 +1,188 @@
+import { siteConfig } from '@/lib/site';
+import {
+  hookCategories,
+  hooks,
+  hooksByCategory,
+  relatedHooks,
+} from '@/lib/hooks-registry';
+import { guides } from '@/content/guides';
+import { comparisons } from '@/content/comparisons';
+import { allFaqs } from '@/content/faq';
+import type { Block } from '@/lib/article';
+import { packageVersion } from '@/lib/package-info';
+import { getHookExample } from '@/content/hook-examples';
+import { apiReferencePath } from '@/lib/api-reference';
+
+
+/** Flattens an article's blocks into plain text an LLM can ingest. */
+function renderBlocks(blocks: Block[]): string[] {
+  const out: string[] = [];
+  for (const block of blocks) {
+    switch (block.type) {
+      case 'h2':
+        out.push('', `### ${block.text}`, '');
+        break;
+      case 'h3':
+        out.push('', `#### ${block.text}`, '');
+        break;
+      case 'lead':
+      case 'p':
+      case 'keyTakeaway':
+        out.push(block.text, '');
+        break;
+      case 'callout':
+        out.push(`> ${block.title ? `${block.title}: ` : ''}${block.text}`, '');
+        break;
+      case 'list':
+        block.items.forEach((item, index) =>
+          out.push(block.ordered ? `${index + 1}. ${item}` : `- ${item}`),
+        );
+        out.push('');
+        break;
+      case 'code':
+        out.push('```' + (block.lang ?? 'tsx'), block.code.trim(), '```', '');
+        break;
+      case 'table':
+        out.push(`| ${block.head.join(' | ')} |`);
+        out.push(`| ${block.head.map(() => '---').join(' | ')} |`);
+        block.rows.forEach((row) => out.push(`| ${row.join(' | ')} |`));
+        out.push('');
+        break;
+      case 'steps':
+        block.items.forEach((step, index) =>
+          out.push(`${index + 1}. **${step.name}** — ${step.text}`),
+        );
+        out.push('');
+        break;
+      case 'faq':
+        block.items.forEach((item) => {
+          out.push(`**Q: ${item.question}**`, `A: ${item.answer}`, '');
+        });
+        break;
+      default:
+        break;
+    }
+  }
+  return out;
+}
+
+export type CorpusPart = 'all' | 'hooks' | 'guides';
+
+/**
+ * The documentation corpus as plain text.
+ * - 'all' is /llms-full.txt: every hook, guide, comparison and FAQ.
+ * - 'hooks' is /llms-hooks.txt and 'guides' is /llms-guides.txt: the same
+ *   content split in two, for agents that truncate long files.
+ */
+export function buildCorpus(part: CorpusPart): string {
+  const url = (path: string) => `${siteConfig.url}${path}`;
+  const lines: string[] = [];
+
+  const titles: Record<CorpusPart, string> = {
+    all: 'complete documentation',
+    hooks: 'hooks reference',
+    guides: 'guides, comparisons and FAQ',
+  };
+  lines.push(`# ${siteConfig.package} — ${titles[part]}`);
+  lines.push('');
+  lines.push(`Version: ${packageVersion}`);
+  lines.push(`Documentation: ${siteConfig.url}`);
+  lines.push(`Repository: ${siteConfig.links.github}`);
+  lines.push(`npm: ${siteConfig.links.npm}`);
+  lines.push(`Publisher: ${siteConfig.author.name} (${siteConfig.author.url})`);
+  lines.push('Licence: MIT');
+  lines.push(`Generated: ${new Date().toISOString().split('T')[0]}`);
+  lines.push('');
+  lines.push(`> ${siteConfig.description}`);
+  lines.push('');
+
+  lines.push('## Install');
+  lines.push('');
+  lines.push('```bash');
+  lines.push(`npm install ${siteConfig.package}`);
+  lines.push('```');
+  lines.push('');
+  lines.push(
+    'React 18 or later is required as a peer dependency. The package has no runtime dependencies and ships both ESM and CommonJS builds with TypeScript declarations.',
+  );
+  lines.push('');
+
+  if (part !== 'guides') {
+    lines.push(`## Hooks (${hooks.length})`);
+    lines.push('');
+
+    for (const category of hookCategories) {
+      lines.push(`## Category: ${category.title}`);
+      lines.push('');
+      lines.push(category.blurb);
+      lines.push('');
+
+      for (const hook of hooksByCategory(category.id)) {
+        lines.push(`### ${hook.name}`);
+        lines.push('');
+        lines.push(hook.description);
+        lines.push('');
+        lines.push('```typescript');
+        lines.push(hook.signature);
+        lines.push('```');
+        lines.push('');
+        lines.push('Example:');
+        lines.push('');
+        lines.push('```tsx');
+        lines.push(getHookExample(hook.slug));
+        lines.push('```');
+        lines.push('');
+        lines.push(`- Documentation: ${url(`/${hook.slug}`)}`);
+        lines.push(
+          `- API reference: ${url(apiReferencePath(hook.name) ?? '/api-reference')}`,
+        );
+        lines.push(`- SSR safe: ${hook.ssrSafe ? 'yes' : 'no'}`);
+        if (hook.ssrNote) lines.push(`- SSR note: ${hook.ssrNote}`);
+        lines.push(`- Use cases: ${hook.keywords.join('; ')}`);
+        const related = relatedHooks(hook.slug);
+        if (related.length > 0) {
+          lines.push(`- Related: ${related.map((entry) => entry.name).join(', ')}`);
+        }
+        lines.push('');
+      }
+    }
+
+  }
+
+  if (part !== 'hooks') {
+    lines.push('## Guides');
+    lines.push('');
+    for (const guide of guides) {
+      lines.push(`## ${guide.title}`);
+      lines.push('');
+      lines.push(`URL: ${url(`/guides/${guide.slug}`)}`);
+      lines.push('');
+      lines.push(`Summary: ${guide.answer}`);
+      lines.push('');
+      lines.push(...renderBlocks(guide.blocks));
+    }
+
+    lines.push('## Library comparisons');
+    lines.push('');
+    for (const comparison of comparisons) {
+      lines.push(`## ${comparison.title}`);
+      lines.push('');
+      lines.push(`URL: ${url(`/compare/${comparison.slug}`)}`);
+      lines.push('');
+      lines.push(`Summary: ${comparison.answer}`);
+      lines.push('');
+      lines.push(...renderBlocks(comparison.blocks));
+    }
+
+    lines.push('## Frequently asked questions');
+    lines.push('');
+    for (const faq of allFaqs) {
+      lines.push(`**Q: ${faq.question}**`);
+      lines.push(`A: ${faq.answer}`);
+      lines.push('');
+    }
+
+  }
+
+  return lines.join('\n');
+}

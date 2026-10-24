@@ -6,5 +6,5 @@
   "disableSources": true,
   "hideBreadcrumbs": true,
   "hidePageTitle": true,
-  "tsconfig": "../../packages/hooks/tsconfig.json"
+  "tsconfig": "../../packages/hooks/tsconfig.docs.json"
 }

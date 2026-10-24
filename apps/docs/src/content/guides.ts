@@ -696,7 +696,7 @@ function useThrottledScroll(handler: (y: number) => void, ms = 100) {
     description:
       'Persisting React state to localStorage without hydration errors, cross-tab desync, quota crashes or JSON parse failures — with a production-ready hook.',
     answer:
-      'To use localStorage in React safely you need four things: a lazy useState initialiser so you read storage only once, a typeof window guard so server rendering does not crash, a try/catch around every read and write because storage can be disabled or full, and a storage event listener so other tabs stay in sync. useLocalStorage from @danixsoft/hooks handles all four.',
+      'To use localStorage in React safely you need four things: read storage only when it changes, not on every render; render the same default on the server and during hydration (useSyncExternalStore with a server snapshot does this), then apply the stored value; wrap every read and write in try/catch because storage can be disabled or full; and listen for storage events so other tabs stay in sync. useLocalStorage from @danixsoft/hooks handles all four.',
     keywords: [
       'react localstorage hook',
       'persist state react',
@@ -705,7 +705,7 @@ function useThrottledScroll(handler: (y: number) => void, ms = 100) {
       'sync localstorage across tabs',
     ],
     datePublished: '2025-05-19',
-    dateModified: '2026-01-20',
+    dateModified: '2026-10-24',
     related: ['nextjs-ssr-safe-hooks', 'custom-react-hooks-best-practices'],
     blocks: [
       {
@@ -751,20 +751,22 @@ function useThrottledScroll(handler: (y: number) => void, ms = 100) {
       { type: 'h2', text: 'Bug 2: the server has no localStorage' },
       {
         type: 'p',
-        text: 'Under Next.js this crashes the build outright. The initialiser must return the fallback when there is no window, which also keeps the server HTML and the first client render in agreement.',
+        text: 'Under Next.js a bare `localStorage` read crashes the server render. The common fix, a `typeof window` guard inside the `useState` initialiser, stops the crash but creates a subtler bug: the server renders the default, the hydrating client reads the stored value, and React reports a hydration mismatch whenever something is stored. The reliable fix is `useSyncExternalStore` with a server snapshot. React renders the server snapshot on the server and during hydration, then re-renders with the real value.',
       },
       {
         type: 'code',
         lang: 'tsx',
-        code: `const [value, setValue] = useState<T>(() => {
-  if (typeof window === 'undefined') return initial;
-  // …read storage
-});`,
+        title: 'Same markup on the server and during hydration',
+        code: `const value = useSyncExternalStore(
+  subscribe,                       // storage events
+  () => readFromStorage(key),      // client snapshot
+  () => initial                    // server + hydration snapshot
+);`,
       },
       {
         type: 'callout',
         tone: 'info',
-        text: 'This deliberately means the first paint shows the default, not the stored value. If a flash is unacceptable — a theme, for instance — you need a blocking inline script as well; see [SSR-safe hooks in Next.js](/guides/nextjs-ssr-safe-hooks).',
+        text: 'This deliberately means the first paint after a server render shows the default, not the stored value. If a flash is unacceptable (a theme, for instance) you need a blocking inline script as well; see [SSR-safe hooks in Next.js](/guides/nextjs-ssr-safe-hooks).',
       },
 
       { type: 'h2', text: 'Bug 3: storage throws more often than you think' },
@@ -816,7 +818,7 @@ function useThrottledScroll(handler: (y: number) => void, ms = 100) {
       },
       {
         type: 'p',
-        text: 'For components inside the _same_ tab to stay in sync, the setter also dispatches a synthetic `StorageEvent` — otherwise two components using the same key would drift apart. `useLocalStorage` does this for you.',
+        text: 'Two more details trip people up. Removals arrive with `newValue === null` and must reset the state, not be ignored. And components inside the _same_ tab need their own notification, otherwise two components using the same key drift apart. `useLocalStorage` handles both, keeps its setter stable, and applies functional updates against the latest stored value.',
       },
 
       { type: 'h2', text: 'The finished hook' },
@@ -1353,6 +1355,238 @@ function Counter() {
             question: 'Does useEvent solve this everywhere?',
             answer:
               'It solves it for callbacks: you get a stable function identity that always reads current state. It does not help with values you read directly inside an effect body — for those you still need the dependency array or the updater form.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'uselocalstorage-hydration-error-nextjs',
+    section: '/guides',
+    title: 'useLocalStorage Hydration Error in Next.js: Why It Happens and How to Fix It',
+    heading: 'Fixing the useLocalStorage hydration error in Next.js',
+    description:
+      'Why reading localStorage in a useState initialiser causes "Hydration failed because the server rendered text didn\'t match the client", and the useSyncExternalStore fix that removes it.',
+    answer:
+      'The error appears because the server cannot read localStorage, so it renders the default value, while the browser reads the stored value during hydration and renders something different. Fix it by reading storage through useSyncExternalStore with a server snapshot that returns the default: React then renders the default on the server and during hydration, and switches to the stored value immediately after. useLocalStorage from @danixsoft/hooks (0.3 and later) works this way.',
+    keywords: [
+      'uselocalstorage hydration error',
+      'hydration failed because the server rendered text didn\'t match the client',
+      'text content does not match server-rendered html localstorage',
+      'next.js localstorage hydration mismatch',
+      'usesyncexternalstore localstorage',
+    ],
+    datePublished: '2026-10-24',
+    related: ['react-localstorage-guide', 'nextjs-ssr-safe-hooks', 'usemediaquery-without-flicker-nextjs'],
+    blocks: [
+      {
+        type: 'lead',
+        text: 'You add a persisted setting, reload the page, and the console shows a hydration error. It only happens when something is stored, which is why it slips through testing on a fresh browser.',
+      },
+      { type: 'h2', text: 'The error' },
+      {
+        type: 'p',
+        text: 'React 19 reports it as "Hydration failed because the server rendered text didn\'t match the client". React 18 says "Text content does not match server-rendered HTML". Either way, React throws away the server HTML for that part of the tree and renders it again on the client.',
+      },
+      { type: 'h2', text: 'Why it happens' },
+      {
+        type: 'code',
+        lang: 'tsx',
+        title: 'The pattern that causes it',
+        code: `'use client';
+
+function useStoredTheme() {
+  const [theme, setTheme] = useState(() => {
+    // Server: no window, returns 'light'.
+    // Browser, during hydration: returns the stored 'dark'.
+    if (typeof window === 'undefined') return 'light';
+    return localStorage.getItem('theme') ?? 'light';
+  });
+  return [theme, setTheme] as const;
+}`,
+      },
+      {
+        type: 'p',
+        text: 'The `typeof window` guard stops the server from crashing, but it guarantees that the server and the first client render disagree whenever a value is stored. Hydration requires them to agree.',
+      },
+      { type: 'h2', text: 'The fix: useSyncExternalStore with a server snapshot' },
+      {
+        type: 'p',
+        text: 'localStorage is an external store, and React has a hook for exactly that. Its third argument, `getServerSnapshot`, is used on the server and during hydration. React renders that value first, then re-renders with the real one, without a mismatch.',
+      },
+      {
+        type: 'code',
+        lang: 'tsx',
+        title: 'Hydration-safe storage read',
+        code: `import { useSyncExternalStore } from 'react';
+
+function subscribe(onChange: () => void) {
+  window.addEventListener('storage', onChange);
+  return () => window.removeEventListener('storage', onChange);
+}
+
+export function useStoredTheme() {
+  return useSyncExternalStore(
+    subscribe,
+    () => localStorage.getItem('theme') ?? 'light', // browser
+    () => 'light'                                    // server + hydration
+  );
+}`,
+      },
+      {
+        type: 'p',
+        text: 'A complete hook also needs a setter, same-tab notifications, JSON parsing with a fallback, and protection against storage that throws. useLocalStorage handles those, keeps the setter stable, and returns a removeValue function.',
+      },
+      {
+        type: 'code',
+        lang: 'tsx',
+        title: 'With @danixsoft/hooks',
+        code: `'use client';
+
+import { useLocalStorage } from '@danixsoft/hooks';
+
+export function ThemeToggle() {
+  const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('theme', 'light');
+  return (
+    <button onClick={() => setTheme((t) => (t === 'light' ? 'dark' : 'light'))}>
+      Theme: {theme}
+    </button>
+  );
+}`,
+      },
+      {
+        type: 'callout',
+        tone: 'info',
+        text: 'After a server render, the first paint shows the default and the stored value appears right after hydration. For a theme, where that change is visible, also add a small blocking script that sets the theme class before paint; see [SSR-safe hooks in Next.js](/guides/nextjs-ssr-safe-hooks).',
+      },
+      { type: 'h2', text: 'Approaches that only hide the error' },
+      {
+        type: 'list',
+        items: [
+          '`suppressHydrationWarning` silences the warning for one element\'s text, but React still keeps the server text, so the user sees the wrong value until something else re-renders.',
+          '`dynamic(() => import(...), { ssr: false })` avoids the mismatch by not server-rendering the component at all, which costs you its HTML and causes layout shift.',
+          'Reading storage in a `useEffect` and calling `setState` works, but every component needs the same boilerplate and two components using one key can drift apart.',
+        ],
+      },
+      {
+        type: 'faq',
+        items: [
+          {
+            question: 'Does this affect useSessionStorage and cookies too?',
+            answer:
+              'Yes, for the same reason. useSessionStorage and useCookie in @danixsoft/hooks use the same useSyncExternalStore pattern, and the library has hydration tests for all three.',
+          },
+          {
+            question: 'Why does the error only appear on reload?',
+            answer:
+              'On a fresh browser nothing is stored, so the server default and the client value happen to match. Once a value is saved, every server-rendered load mismatches.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'usemediaquery-without-flicker-nextjs',
+    section: '/guides',
+    title: 'useMediaQuery Without Flicker in Next.js',
+    heading: 'useMediaQuery without flicker in Next.js',
+    description:
+      'Why media-query hooks flash the wrong layout on first paint, how useSyncExternalStore removes the flash for client renders, and when CSS is the better answer.',
+    answer:
+      'Most useMediaQuery hooks start at false and correct themselves in an effect, so every render flashes the false branch first. Reading matchMedia through useSyncExternalStore gives client-only renders the real value immediately; for server-rendered pages, set a defaultValue that matches most visitors, and prefer CSS media queries for pure layout so nothing needs to switch.',
+    keywords: [
+      'usemediaquery flicker',
+      'usemediaquery nextjs',
+      'usemediaquery hydration mismatch',
+      'matchmedia ssr react',
+      'responsive hook without layout shift',
+    ],
+    datePublished: '2026-10-24',
+    related: ['uselocalstorage-hydration-error-nextjs', 'nextjs-ssr-safe-hooks'],
+    blocks: [
+      {
+        type: 'lead',
+        text: 'A media-query hook decides which component to render, and for one frame it decides wrong. On a fast machine you barely see it; on a phone it is a visible jump.',
+      },
+      { type: 'h2', text: 'Where the flash comes from' },
+      {
+        type: 'code',
+        lang: 'tsx',
+        title: 'The common implementation',
+        code: `function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(false); // always false first
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    setMatches(media.matches);                    // corrected after paint
+    const onChange = () => setMatches(media.matches);
+    media.addEventListener('change', onChange);
+    return () => media.removeEventListener('change', onChange);
+  }, [query]);
+  return matches;
+}`,
+      },
+      {
+        type: 'p',
+        text: 'Because the real value is only read in an effect, even components that mount long after hydration (in a modal, or after client navigation) render the false branch first.',
+      },
+      { type: 'h2', text: 'Read matchMedia as an external store' },
+      {
+        type: 'code',
+        lang: 'tsx',
+        code: `export function useMediaQuery(query: string, defaultValue = false) {
+  return useSyncExternalStore(
+    (onChange) => {
+      const media = window.matchMedia(query);
+      media.addEventListener('change', onChange);
+      return () => media.removeEventListener('change', onChange);
+    },
+    () => window.matchMedia(query).matches, // client: real value, first render
+    () => defaultValue                       // server + hydration
+  );
+}`,
+      },
+      {
+        type: 'p',
+        text: 'Client renders now get the correct value on the first render. Server rendering and hydration use `defaultValue`, so there is no hydration mismatch. useMediaQuery in @danixsoft/hooks works this way and accepts `{ defaultValue }`.',
+      },
+      { type: 'h2', text: 'Server-rendered pages' },
+      {
+        type: 'p',
+        text: 'The server cannot know the viewport, so a server-rendered page still shows `defaultValue` until hydration finishes. Two things keep that invisible:',
+      },
+      {
+        type: 'list',
+        items: [
+          'Pick the default most visitors match. For a mobile-heavy audience, `useMediaQuery(\'(max-width: 768px)\', { defaultValue: true })` means most people never see a change.',
+          'Use CSS for layout. If both versions can be in the HTML, hide one with a CSS media query instead of choosing in JavaScript. Use the hook for behaviour (which component to mount, whether to load a heavy widget), not for showing and hiding.',
+        ],
+      },
+      {
+        type: 'code',
+        lang: 'tsx',
+        title: 'Behaviour in JavaScript, layout in CSS',
+        code: `'use client';
+
+import { useMediaQuery } from '@danixsoft/hooks';
+
+export function Navigation() {
+  const isMobile = useMediaQuery('(max-width: 768px)', { defaultValue: true });
+  // Mount the drawer logic only where it is used; the layout itself is CSS.
+  return isMobile ? <MobileDrawer /> : <DesktopMenu />;
+}`,
+      },
+      {
+        type: 'faq',
+        items: [
+          {
+            question: 'Does prefers-reduced-motion work the same way?',
+            answer:
+              'Yes. useMediaQuery(\'(prefers-reduced-motion: reduce)\') follows the OS setting and updates when it changes. Default it to true if you would rather start without animation on the server.',
+          },
+          {
+            question: 'What about useWindowSize?',
+            answer:
+              'useWindowSize in @danixsoft/hooks uses the same pattern: undefined on the server and during hydration, the real size on client renders. Prefer a media query when you only need a breakpoint, since it re-renders only when the breakpoint flips, not on every resize.',
           },
         ],
       },

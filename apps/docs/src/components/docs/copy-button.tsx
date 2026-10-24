@@ -2,15 +2,24 @@
 
 import { useState } from 'react';
 import { CheckIcon, CopyIcon } from '@/components/ui/icons';
+import { track } from '@/lib/track';
 
 /** The only interactive part of a code block — kept tiny so it is all that hydrates. */
-export default function CopyButton({ text }: { text: string }) {
+export default function CopyButton({
+  text,
+  hook,
+}: {
+  text: string;
+  /** Hook name for the copy_code analytics event, when the code belongs to one. */
+  hook?: string;
+}) {
   const [copied, setCopied] = useState(false);
 
   const onCopy = async () => {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
+      track('copy_code', hook ? { hook } : undefined);
       setTimeout(() => setCopied(false), 2000);
     } catch {
       /* clipboard blocked — the code is still selectable */

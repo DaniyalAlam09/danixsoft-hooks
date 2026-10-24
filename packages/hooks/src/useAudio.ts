@@ -26,16 +26,29 @@ export function useAudio(src: string) {
     }
   }, [volume, audio]);
 
+  // play() returns a promise that rejects when autoplay is blocked or the
+  // source fails; reflect that instead of leaving an unhandled rejection.
+  const startPlayback = (element: HTMLAudioElement) => {
+    setPlaying(true);
+    const result = element.play();
+    if (result && typeof result.catch === 'function') {
+      result.catch(() => setPlaying(false));
+    }
+  };
+
   const toggle = () => {
     if (!audio) return;
-    playing ? audio.pause() : audio.play();
-    setPlaying(!playing);
+    if (playing) {
+      audio.pause();
+      setPlaying(false);
+    } else {
+      startPlayback(audio);
+    }
   };
 
   const play = () => {
     if (!audio) return;
-    audio.play();
-    setPlaying(true);
+    startPlayback(audio);
   };
 
   const pause = () => {

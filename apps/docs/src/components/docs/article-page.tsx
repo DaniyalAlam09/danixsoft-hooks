@@ -145,6 +145,27 @@ export default function ArticlePage({
             </section>
           )}
 
+          {article.section === '/guides' && (
+            <aside
+              aria-label="DanixSoft services"
+              className="mt-12 flex flex-wrap items-center gap-4 rounded-xl border border-border bg-bg-subtle p-5"
+            >
+              <p className="min-w-0 flex-1 text-sm leading-relaxed text-fg-muted">
+                <span className="font-semibold text-fg">Need a React or Next.js team?</span>{' '}
+                DanixSoft, the team behind these hooks, builds and maintains
+                production web apps.
+              </p>
+              <a
+                href="https://www.danixsoft.com/packages?utm_source=react-hooks&utm_medium=docs&utm_campaign=guide-cta"
+                data-track="DanixSoft services"
+                className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border bg-surface px-3.5 py-2 text-sm font-medium text-fg transition-colors hover:border-accent/40"
+              >
+                See packages
+                <ArrowRightIcon className="h-4 w-4 text-accent" />
+              </a>
+            </aside>
+          )}
+
           <PageNav
             previous={
               previous

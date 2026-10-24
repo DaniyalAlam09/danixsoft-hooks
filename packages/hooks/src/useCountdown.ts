@@ -1,7 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 interface UseCountdownOptions {
+  /** Milliseconds between ticks. Defaults to 1000. */
   interval?: number;
+  /** Called once when the count reaches 0. */
   onEnd?: () => void;
 }
 
@@ -10,7 +12,17 @@ export function useCountdown(initialCount: number, options?: UseCountdownOptions
   const [isCounting, setIsCounting] = useState(false);
   const interval = options?.interval ?? 1000;
 
-  const start = useCallback(() => setIsCounting(true), []);
+  // Kept in refs so an inline options object doesn't restart the interval on
+  // every render, and onEnd is never called from inside a state updater
+  // (which React may run twice).
+  const onEndRef = useRef(options?.onEnd);
+  onEndRef.current = options?.onEnd;
+  const countRef = useRef(count);
+  countRef.current = count;
+
+  const start = useCallback(() => {
+    if (countRef.current > 0) setIsCounting(true);
+  }, []);
   const pause = useCallback(() => setIsCounting(false), []);
   const reset = useCallback(() => {
     setIsCounting(false);
@@ -21,19 +33,18 @@ export function useCountdown(initialCount: number, options?: UseCountdownOptions
     if (!isCounting) return;
 
     const id = setInterval(() => {
-      setCount(prev => {
-        if (prev <= 1) {
-          setIsCounting(false);
-          clearInterval(id);
-          options?.onEnd?.();
-          return 0;
-        }
-        return prev - 1;
-      });
+      const next = Math.max(countRef.current - 1, 0);
+      countRef.current = next;
+      setCount(next);
+      if (next === 0) {
+        clearInterval(id);
+        setIsCounting(false);
+        onEndRef.current?.();
+      }
     }, interval);
 
     return () => clearInterval(id);
-  }, [isCounting, interval, options]);
+  }, [isCounting, interval]);
 
   return { count, isCounting, start, pause, reset };
 }

@@ -4,15 +4,24 @@
 
 ## Interfaces
 
+- [CookieOptions](interfaces/CookieOptions.md)
+- [FetchState](interfaces/FetchState.md)
 - [GeolocationState](interfaces/GeolocationState.md)
 - [MapActions](interfaces/MapActions.md)
 - [MouseState](interfaces/MouseState.md)
+- [ScrollState](interfaces/ScrollState.md)
+- [StorageOptions](interfaces/StorageOptions.md)
 - [SwipeState](interfaces/SwipeState.md)
 - [TouchState](interfaces/TouchState.md)
+- [UseFetchOptions](interfaces/UseFetchOptions.md)
+- [UseFetchResult](interfaces/UseFetchResult.md)
 - [UseFormOptions](interfaces/UseFormOptions.md)
+- [UseMediaQueryOptions](interfaces/UseMediaQueryOptions.md)
+- [WindowSize](interfaces/WindowSize.md)
 
 ## Type Aliases
 
+- [SetStorageValue](type-aliases/SetStorageValue.md)
 - [UseScriptStatus](type-aliases/UseScriptStatus.md)
 
 ## Variables
@@ -64,3 +73,9 @@
 - [useUpdateEffect](functions/useUpdateEffect.md)
 - [useWindowScroll](functions/useWindowScroll.md)
 - [useWindowSize](functions/useWindowSize.md)
+
+## References
+
+### useClickAnywhere
+
+Renames and re-exports [useClickAnyWhere](functions/useClickAnyWhere.md)

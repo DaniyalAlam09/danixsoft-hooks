@@ -138,9 +138,9 @@ export const hooks: HookEntry[] = [
     purpose: 'persistent localStorage state',
     summary: 'State synced to localStorage, across tabs and components.',
     description:
-      'useLocalStorage persists React state to window.localStorage and keeps every component and browser tab in sync through storage events. It serialises with JSON, guards against SSR by falling back to the initial value on the server, and never throws when storage is unavailable or full.',
+      'useLocalStorage persists React state to window.localStorage and keeps every component and browser tab in sync, including removals. It is built on useSyncExternalStore, so server rendering and hydration never mismatch. The setter is stable, functional updates always see the latest value, removeValue resets to the initial value, and a custom serializer/deserializer is supported. It never throws when storage is unavailable or full: values are kept in memory instead.',
     signature:
-      'useLocalStorage<T>(key: string, initialValue: T): readonly [T, (value: T | ((val: T) => T)) => void]',
+      'useLocalStorage<T>(key: string, initialValue: T, options?: { serializer?: (value: T) => string; deserializer?: (raw: string) => T }): readonly [T, (value: T | ((prev: T) => T)) => void, () => void]',
     keywords: [
       'localStorage react hook',
       'persist state react',
@@ -150,7 +150,7 @@ export const hooks: HookEntry[] = [
     related: ['use-session-storage', 'use-cookie', 'use-is-client'],
     ssrSafe: true,
     ssrNote:
-      'The initial state is read from localStorage on the first client render, while the server renders initialValue. If the stored value changes the markup, render that part after hydration (for example behind useIsClient) to avoid a hydration mismatch.',
+      'The server and the hydrating client both render initialValue, then the stored value from localStorage is applied immediately after hydration, so there is no hydration mismatch. Components that mount later on the client read the stored value on their first render.',
   },
   {
     slug: 'use-session-storage',
@@ -161,12 +161,12 @@ export const hooks: HookEntry[] = [
     description:
       'useSessionStorage mirrors useLocalStorage but writes to sessionStorage, so values live only for the current tab and are cleared when it closes. Use it for multi-step form drafts, one-off dismissals and anything that should not outlive the session.',
     signature:
-      'useSessionStorage<T>(key: string, initialValue: T): readonly [T, (value: T | ((val: T) => T)) => void]',
+      'useSessionStorage<T>(key: string, initialValue: T, options?: { serializer?: (value: T) => string; deserializer?: (raw: string) => T }): readonly [T, (value: T | ((prev: T) => T)) => void, () => void]',
     keywords: ['sessionStorage hook', 'tab scoped state', 'form draft state'],
     related: ['use-local-storage', 'use-cookie', 'use-form'],
     ssrSafe: true,
     ssrNote:
-      'The initial state is read from sessionStorage on the first client render, while the server renders initialValue. If the stored value changes the markup, render that part after hydration (for example behind useIsClient) to avoid a hydration mismatch.',
+      'The server and the hydrating client both render initialValue, then the stored value from sessionStorage is applied immediately after hydration, so there is no hydration mismatch. Components that mount later on the client read the stored value on their first render.',
   },
   {
     slug: 'use-cookie',
@@ -177,12 +177,12 @@ export const hooks: HookEntry[] = [
     description:
       'useCookie exposes a single document cookie as React state. It returns the current value plus setter and delete callbacks, accepts an expiry in days, and encodes values safely — handy for consent banners, locale preferences and anything the server also needs to read.',
     signature:
-      'useCookie(cookieName: string): readonly [string | null, (newValue: string, days?: number) => void, () => void]',
+      'useCookie(cookieName: string, options?: { path?: string; domain?: string; sameSite?: "Strict" | "Lax" | "None"; secure?: boolean }): readonly [string | null, (newValue: string, days?: number) => void, () => void]',
     keywords: ['react cookie hook', 'document.cookie', 'consent banner', 'locale cookie'],
     related: ['use-local-storage', 'use-session-storage', 'use-is-client'],
     ssrSafe: true,
     ssrNote:
-      'Returns null on the server because document.cookie is unavailable there; the first client render reads the real cookie. Gate cookie-dependent markup behind useIsClient, or read the cookie on the server, to avoid a hydration mismatch.',
+      'Returns null on the server and during hydration, then the real cookie value immediately after, so there is no hydration mismatch. If the server must render the cookie value itself, read it from the request instead.',
   },
   {
     slug: 'use-debounce',
@@ -302,8 +302,8 @@ export const hooks: HookEntry[] = [
     purpose: 'data fetching',
     summary: 'Declarative fetch with data, error and loading state.',
     description:
-      'useFetch wraps the Fetch API in a hook that returns data, error and loading. It aborts in-flight requests when the URL changes or the component unmounts, so you never set state on an unmounted component or render a stale response.',
-    signature: 'useFetch<T = unknown>(url: string, options?: RequestInit): FetchState<T>',
+      'useFetch wraps the Fetch API in a hook that returns data, error, loading and refetch. Pass null as the URL or enabled: false to skip the request, and a parse function for non-JSON bodies. It aborts in-flight requests when the URL changes or the component unmounts, and compares options by value so inline objects do not refetch. For caching and deduplication, use TanStack Query.',
+    signature: 'useFetch<T = unknown>(url: string | null, options?: RequestInit & { enabled?: boolean; parse?: (response: Response) => Promise<T> }): { data: T | null; error: Error | null; isLoading: boolean; refetch: () => void }',
     keywords: [
       'react fetch hook',
       'data fetching hook',
@@ -341,7 +341,7 @@ export const hooks: HookEntry[] = [
     purpose: 'document-wide clicks',
     summary: 'Handle every click on the document.',
     description:
-      'useClickAnyWhere attaches a document-level click handler that is cleaned up automatically. Use it for analytics, dismissing global overlays, or closing a command palette regardless of where the user clicked.',
+      'useClickAnyWhere attaches a document-level click handler that is cleaned up automatically. Use it for analytics, dismissing global overlays, or closing a command palette regardless of where the user clicked. It is also exported as useClickAnywhere (conventional casing); both names are the same hook.',
     signature: 'useClickAnyWhere(handler: (event: MouseEvent) => void): void',
     keywords: ['document click hook', 'global click listener', 'click anywhere react'],
     related: ['use-click-outside', 'use-event-listener', 'use-mouse'],
@@ -354,8 +354,8 @@ export const hooks: HookEntry[] = [
     purpose: 'CSS media queries',
     summary: 'Subscribe to a CSS media query from JavaScript.',
     description:
-      'useMediaQuery evaluates a CSS media query with matchMedia and re-renders when it changes. Read breakpoints, prefers-color-scheme or prefers-reduced-motion in JavaScript, with an SSR-safe false on the server so hydration stays clean.',
-    signature: 'useMediaQuery(query: string): boolean',
+      'useMediaQuery evaluates a CSS media query with matchMedia and re-renders when it changes. Read breakpoints, prefers-color-scheme or prefers-reduced-motion in JavaScript. Built on useSyncExternalStore: client-only renders get the real value immediately (no flash), and server rendering and hydration use defaultValue (false unless you set it), so hydration stays clean.',
+    signature: 'useMediaQuery(query: string, options?: { defaultValue?: boolean }): boolean',
     keywords: [
       'useMediaQuery react',
       'matchMedia hook',
@@ -364,6 +364,8 @@ export const hooks: HookEntry[] = [
     ],
     related: ['use-window-size', 'use-screen', 'use-is-client'],
     ssrSafe: true,
+    ssrNote:
+      'Returns defaultValue (false by default) on the server and during hydration, then the real match immediately after. Set defaultValue to what most visitors match, for example true for a mobile-first max-width query, to avoid a visible swap.',
   },
   {
     slug: 'use-on-screen',
@@ -424,7 +426,7 @@ export const hooks: HookEntry[] = [
     related: ['use-on-screen', 'use-scroll-lock', 'use-event-listener'],
     ssrSafe: true,
     ssrNote:
-      'Returns { x: 0, y: 0 } on the server and the real scroll offset on the first client render. Render offset-dependent markup after hydration if the page can load already scrolled.',
+      'Returns { x: 0, y: 0 } on the server and during hydration, then the real scroll offset immediately after, so a page that loads already scrolled does not cause a hydration mismatch.',
   },
   {
     slug: 'use-document-title',
@@ -485,7 +487,7 @@ export const hooks: HookEntry[] = [
     related: ['use-window-size', 'use-media-query', 'use-is-client'],
     ssrSafe: true,
     ssrNote:
-      'Returns null on the server and window.screen on the first client render. Render screen-dependent markup after hydration (for example behind useIsClient) to avoid a hydration mismatch.',
+      'Returns null on the server and during hydration, then window.screen immediately after, so there is no hydration mismatch. Client-only renders get window.screen on the first render.',
   },
   {
     slug: 'use-mutation-observer',
@@ -709,7 +711,7 @@ export const hooks: HookEntry[] = [
     related: ['use-fetch', 'use-event-listener', 'use-is-client'],
     ssrSafe: true,
     ssrNote:
-      'Returns true on the server and navigator.onLine on the first client render, so an offline visitor can see a hydration mismatch if the status changes the markup.',
+      'Returns true on the server and during hydration, then navigator.onLine immediately after, so there is no hydration mismatch for offline visitors.',
   },
   {
     slug: 'use-geolocation',

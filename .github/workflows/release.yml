@@ -1,0 +1,60 @@
+name: Release
+
+# Opens a "Version Packages" PR from pending changesets and, when that PR is
+# merged, publishes @danixsoft/hooks to npm with provenance.
+#
+# Switched off until the owner enables it:
+#   1. npm: create a granular automation token scoped to @danixsoft/hooks
+#      (publish only) and add it as the repository secret NPM_TOKEN.
+#   2. GitHub: Settings -> Secrets and variables -> Actions -> Variables,
+#      add RELEASE_ENABLED = true.
+#   3. GitHub: Settings -> Actions -> General -> allow GitHub Actions to create
+#      and approve pull requests.
+
+on:
+  push:
+    branches: [main]
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write # npm provenance (OIDC)
+
+jobs:
+  release:
+    if: vars.RELEASE_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - run: npm install
+
+      - name: Verify before release
+        run: |
+          npm run typecheck --workspace=@danixsoft/hooks
+          npm run lint --workspace=@danixsoft/hooks
+          npm run test --workspace=@danixsoft/hooks
+          npm run build --workspace=@danixsoft/hooks
+          npm run check:registry --workspace=docs
+          npm pack --dry-run --workspace=@danixsoft/hooks
+
+      - name: Version PR or publish
+        uses: changesets/action@v1
+        with:
+          version: npm run version-packages
+          publish: npm run release
+          commit: 'chore: version packages'
+          title: 'chore: version packages'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: 'true'

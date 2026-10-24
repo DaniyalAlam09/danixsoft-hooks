@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://react-hooks.danixsoft.com
+    about: Every hook has examples, an API table and SSR notes.

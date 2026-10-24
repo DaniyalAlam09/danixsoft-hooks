@@ -1,28 +1,20 @@
-import { useState } from 'react';
+import { useStorageState } from './internal/storage';
+import type { SetStorageValue, StorageOptions } from './internal/storage';
 
-export function useSessionStorage<T>(key: string, initialValue: T) {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window === 'undefined') return initialValue;
-    try {
-      const item = window.sessionStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.warn(`Error reading sessionStorage key "${key}":`, error);
-      return initialValue;
-    }
-  });
-
-  const setValue = (value: T | ((val: T) => T)) => {
-    try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      if (typeof window !== 'undefined') {
-        window.sessionStorage.setItem(key, JSON.stringify(valueToStore));
-      }
-    } catch (error) {
-      console.warn(`Error setting sessionStorage key "${key}":`, error);
-    }
-  };
-
-  return [storedValue, setValue] as const;
+/**
+ * State persisted to `window.sessionStorage` (one browser tab, cleared when
+ * the tab closes) and shared by every component using the same key.
+ *
+ * SSR-safe: the server and the hydrating client render `initialValue`, then
+ * the stored value is applied right after hydration.
+ *
+ * @returns `[value, setValue, removeValue]`. `setValue` is stable and accepts
+ * a value or an updater function.
+ */
+export function useSessionStorage<T>(
+  key: string,
+  initialValue: T,
+  options?: StorageOptions<T>
+): readonly [T, SetStorageValue<T>, () => void] {
+  return useStorageState('sessionStorage', key, initialValue, options);
 }

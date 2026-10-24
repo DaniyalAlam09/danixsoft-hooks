@@ -1,6 +1,5 @@
 import type { MetadataRoute } from 'next';
 import { siteConfig } from '@/lib/site';
-import { apiReferenceRoutes } from '@/lib/api-reference';
 import { hooks } from '@/lib/hooks-registry';
 import { guides } from '@/content/guides';
 import { comparisons } from '@/content/comparisons';
@@ -53,15 +52,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  // Enumerated from the generated files rather than derived from hook names:
-  // not every export is a function (useIsomorphicLayoutEffect is a variable),
-  // and a sitemap that lists 404s is worse than one that omits pages.
-  const apiPages: MetadataRoute.Sitemap = apiReferenceRoutes().map((route) => ({
-    url: url(`/api-reference/${route}`),
-    lastModified: lastModified(librarySource),
-    changeFrequency: 'monthly',
-    priority: 0.5,
-  }));
+  // /api-reference/* symbol pages are deliberately left out: hook symbols
+  // canonicalise to their hook page and type pages are noindex (see the
+  // api-reference page's generateMetadata). Only the index is listed above.
 
-  return [...core, ...hookPages, ...guidePages, ...comparisonPages, ...apiPages];
+  return [...core, ...hookPages, ...guidePages, ...comparisonPages];
 }

@@ -1,0 +1,37 @@
+name: Bug report
+description: A hook behaves differently from its documentation.
+labels: [bug]
+body:
+  - type: input
+    id: hook
+    attributes:
+      label: Hook
+      placeholder: useLocalStorage
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: input
+    id: repro
+    attributes:
+      label: Reproduction link
+      description: A CodeSandbox/StackBlitz link, or the "Open the live sandbox" editor on the hook's docs page.
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      placeholder: "@danixsoft/hooks 0.3.0, React 19.2, Next.js 16"
+    validations:
+      required: true
+  - type: dropdown
+    id: rendering
+    attributes:
+      label: Rendering
+      options:
+        - Client only (Vite, CRA)
+        - Server rendered (Next.js, Remix)
+        - Not sure

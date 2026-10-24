@@ -1,0 +1,19 @@
+name: Hook request
+description: Suggest a new hook or an option for an existing one.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would it solve?
+    validations:
+      required: true
+  - type: textarea
+    id: api
+    attributes:
+      label: Proposed API
+      render: tsx
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: How do you solve it today?

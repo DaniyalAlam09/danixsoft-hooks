@@ -72,13 +72,29 @@ export async function generateMetadata({
 
   const hook = getHookByName(name);
 
+  // Symbol pages restate the hook pages with less content. Point search
+  // engines at the hook page (canonical) so ranking signals are not split,
+  // and keep the remaining type pages out of the index. None of them are in
+  // the sitemap; /api-reference itself stays indexable.
+  if (hook) {
+    const metadata = buildMetadata({
+      title: `${name} — API Reference | ${siteConfig.package}`,
+      description: `Full TypeScript signature, parameters and return type for ${name}. ${hook.summary}`,
+      path: `/api-reference/${slug.join('/')}`,
+      keywords: [name, `${name} typescript`, `${name} signature`],
+    });
+    return {
+      ...metadata,
+      alternates: { canonical: `${siteConfig.url}/${hook.slug}` },
+    };
+  }
+
   return buildMetadata({
     title: `${name} — API Reference | ${siteConfig.package}`,
-    description: hook
-      ? `Full TypeScript signature, parameters and return type for ${name}. ${hook.summary}`
-      : `Full TypeScript definition of ${name} in ${siteConfig.package}, generated from source.`,
+    description: `Full TypeScript definition of ${name} in ${siteConfig.package}, generated from source.`,
     path: `/api-reference/${slug.join('/')}`,
     keywords: [name, `${name} typescript`, `${name} signature`],
+    noindex: true,
   });
 }
 

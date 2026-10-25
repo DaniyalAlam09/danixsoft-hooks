@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "prebuild": "typedoc",
-    "build": "cd ../../packages/hooks && npm run build && cd - && npm run clean:generated && next build",
+    "build": "cd ../../packages/hooks && npm run build && cd - && npm run clean:generated && next build && node scripts/write-cf-routing.mjs",
     "start": "next start",
     "lint": "eslint",
     "clean:generated": "node scripts/clean-generated-public.mjs",

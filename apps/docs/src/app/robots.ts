@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next';
 import { siteConfig } from '@/lib/site';
 
+export const dynamic = 'force-static';
+
 /**
  * AI crawlers are allowed explicitly rather than relying on the wildcard.
  * Being cited by an answer engine is the modern equivalent of a backlink, and

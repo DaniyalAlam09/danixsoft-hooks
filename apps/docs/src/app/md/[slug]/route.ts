@@ -8,7 +8,7 @@ export function generateStaticParams() {
   return hooks.map((hook) => ({ slug: hook.slug }));
 }
 
-/** Served at /<hook-slug>.md through a rewrite in next.config.ts. */
+/** Served at /<hook-slug>.md through a 200 rewrite in _redirects (scripts/write-cf-routing.mjs). */
 export async function GET(_request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const hook = getHook(slug);

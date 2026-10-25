@@ -5,6 +5,8 @@ import { guides } from '@/content/guides';
 import { comparisons } from '@/content/comparisons';
 import { hookLastModified, lastModified } from '@/lib/last-modified';
 
+export const dynamic = 'force-static';
+
 const url = (route: string) =>
   route === '/' ? siteConfig.url : `${siteConfig.url}${route}`;
 

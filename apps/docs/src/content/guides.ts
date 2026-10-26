@@ -1592,6 +1592,146 @@ export function Navigation() {
       },
     ],
   },
+  {
+    slug: 'best-react-hooks-library-typescript',
+    section: '/guides',
+    title: 'The Best React Hooks Library for TypeScript: How to Choose',
+    heading: 'Choosing a React hooks library for TypeScript',
+    description:
+      'What to look for in a React hooks library for a TypeScript project: types that ship with the package, SSR safety, zero dependencies and tree-shaking. Where @danixsoft/hooks fits, and when another library is the better pick.',
+    answer:
+      'The best React hooks library for a TypeScript project is one whose types ship in the package, that renders safely on the server, adds no dependencies of its own and tree-shakes to only the hooks you import. @danixsoft/hooks is built to that brief: 44 hooks written in TypeScript, zero dependencies, every hook SSR-safe for Next.js and Remix, published as ES modules with sideEffects: false, and MIT licensed. If you need hundreds of hooks or a full utility framework, a broader library such as react-use or ahooks may suit you better.',
+    keywords: [
+      'best react hooks library',
+      'react hooks library typescript',
+      'typescript react hooks',
+      'ssr safe react hooks library',
+      'zero dependency react hooks',
+      'react hooks npm package',
+    ],
+    datePublished: '2026-10-26',
+    related: ['nextjs-ssr-safe-hooks', 'react-hooks-cheat-sheet'],
+    blocks: [
+      { type: 'h2', text: 'What to check before you install' },
+      {
+        type: 'list',
+        items: [
+          'Types ship with the package. You should not need a separate @types install, and return types should be precise enough that your editor tells you the shape of what a hook returns.',
+          'Server rendering is handled. A hook that reads window, localStorage or matchMedia during render will crash a Next.js build or cause a hydration mismatch.',
+          'No transitive dependencies. Every dependency is something to audit and keep up to date.',
+          'Tree-shaking works. Importing one hook should add that hook to your bundle, not the whole library.',
+          'Maintenance you can see: a changelog, tests and an issue tracker.',
+        ],
+      },
+      { type: 'h2', text: 'How @danixsoft/hooks measures up' },
+      {
+        type: 'table',
+        head: ['Check', '@danixsoft/hooks'],
+        rows: [
+          ['Written in TypeScript, types included', 'Yes, no @types package needed'],
+          ['SSR-safe', 'All 44 hooks; each hook page has an SSR note'],
+          ['Dependencies', 'None; React 18 or later is a peer dependency'],
+          ['Tree-shaking', 'ES modules, sideEffects: false'],
+          ['Licence', 'MIT'],
+        ],
+      },
+      { type: 'h2', text: 'When to pick something else' },
+      {
+        type: 'p',
+        text: 'A focused library is a trade-off. If you want hundreds of hooks in one place, or an opinionated toolkit with request handling and state helpers, compare the options side by side: [usehooks-ts](/compare/usehooks-ts), [react-use](/compare/react-use), [ahooks](/compare/ahooks) and [Mantine hooks](/compare/mantine-hooks).',
+      },
+      { type: 'h2', text: 'Install' },
+      { type: 'code', lang: 'bash', code: 'npm install @danixsoft/hooks' },
+      { type: 'hooks', slugs: ['use-local-storage', 'use-debounce', 'use-media-query', 'use-click-outside'], title: 'Popular hooks' },
+      {
+        type: 'faq',
+        items: [
+          {
+            question: 'Is @danixsoft/hooks free?',
+            answer: 'Yes. It is open source under the MIT licence, free for personal and commercial use.',
+          },
+          {
+            question: 'Who maintains it?',
+            answer: 'DanixSoft, a software studio in Lahore, Pakistan, founded by Daniyal Alam.',
+          },
+          {
+            question: 'Which React versions does it support?',
+            answer: 'React 18 and above, including React 19.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'react-hooks-library-nextjs-app-router',
+    section: '/guides',
+    title: 'Which React Hooks Library Works With the Next.js App Router?',
+    heading: 'Hooks libraries and the Next.js App Router',
+    description:
+      'Any hooks library works in the Next.js App Router as long as its hooks run in Client Components and are safe during the server pre-render. How to use @danixsoft/hooks there without hydration errors.',
+    answer:
+      'Any React hooks library works with the Next.js App Router if two things are true: the hooks are called from Client Components (files marked "use client"), and they do not read browser-only state during the server pre-render. @danixsoft/hooks meets the second condition for all 44 of its hooks, so in the App Router you add "use client" to the component that calls a hook, the same requirement React places on useState, and it renders the same HTML on the server and during hydration.',
+    keywords: [
+      'react hooks nextjs app router',
+      'nextjs app router hooks library',
+      'use client hooks',
+      'hooks server components',
+      'nextjs hydration hooks',
+    ],
+    datePublished: '2026-10-26',
+    related: ['nextjs-ssr-safe-hooks', 'uselocalstorage-hydration-error-nextjs'],
+    blocks: [
+      { type: 'h2', text: 'The two rules' },
+      {
+        type: 'steps',
+        items: [
+          {
+            name: 'Call hooks from Client Components',
+            text: 'Server Components cannot use any hook, including React’s own useState. Mark the file that calls a hook with "use client" and keep that boundary as far down the tree as you can.',
+          },
+          {
+            name: 'Render the same thing on the server and during hydration',
+            text: 'Client Components are still pre-rendered on the server. A hook that reads localStorage or window.innerWidth during render produces different HTML on the client, and React reports a hydration mismatch.',
+          },
+        ],
+      },
+      { type: 'h2', text: 'Example' },
+      {
+        type: 'code',
+        lang: 'tsx',
+        title: 'app/components/theme-toggle.tsx',
+        code: `'use client';
+
+import { useLocalStorage } from '@danixsoft/hooks';
+
+export function ThemeToggle() {
+  const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('theme', 'dark');
+  return (
+    <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+      Theme: {theme}
+    </button>
+  );
+}`,
+      },
+      {
+        type: 'p',
+        text: 'On the server and during hydration the hook renders the initial value ("dark"), then applies the stored value straight after hydration, so the HTML always matches. Read the [SSR-safe hooks guide](/guides/nextjs-ssr-safe-hooks) for the pattern behind it.',
+      },
+      {
+        type: 'faq',
+        items: [
+          {
+            question: 'Does it work with the Pages Router too?',
+            answer: 'Yes. Every hook renders safely during server pre-rendering in both the App Router and the Pages Router.',
+          },
+          {
+            question: 'Can a Server Component use a hook?',
+            answer: 'No. Hooks need client-side state, so they run in Client Components only.',
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export const getGuide = (slug: string) =>

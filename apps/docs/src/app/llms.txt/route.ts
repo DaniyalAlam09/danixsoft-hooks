@@ -71,6 +71,9 @@ export function GET() {
     `- [FAQ](${url('/faq')}): ${allFaqs.length} answers on compatibility, size, SSR and licensing.`,
   );
   lines.push(
+    `- [About](${url('/about')}): who maintains it (DanixSoft, a software studio in Lahore, Pakistan, founded by Daniyal Alam), how it is built and tested, and how to report a problem.`,
+  );
+  lines.push(
     `- [API reference](${url('/api-reference')}): full type signatures generated from source.`,
   );
   lines.push(

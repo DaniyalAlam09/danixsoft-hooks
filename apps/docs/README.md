@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# @danixsoft/hooks docs (react-hooks.danixsoft.com)
 
-## Getting Started
+The documentation site for the `@danixsoft/hooks` library in `packages/hooks`. Next.js 16,
+built as a static export. Every dynamic route has `generateStaticParams` and the route handlers
+(`/r/[file]`, `/og/[slug]`, `/md/[slug]`, `llms.txt`, `llms-full.txt`) are force-static.
 
-First, run the development server:
+## Commands
+
+Run from the repo root (npm workspaces) or from `apps/docs`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install                          # at the repo root
+npm run dev --workspace=docs         # http://localhost:3000
+npm run lint --workspace=docs
+npm run check:registry --workspace=docs
+npm run build --workspace=docs       # typedoc, builds packages/hooks, next build, then write-cf-routing
+npx -y serve apps/docs/out           # preview the static build (npm run start does not work with an export)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Hosting and deploy
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Moved off Vercel on 25 Oct 2026.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Live:** https://react-hooks.danixsoft.com
+- **Host:** Cloudflare Workers static assets (free plan), Worker `react-hooks-danixsoft`.
+  `react-hooks.danixsoft.com` is a Worker custom domain, so Cloudflare manages its proxied DNS
+  record. No Worker code runs.
+- **Build:** `npm run build --workspace=docs` → `apps/docs/out/`. No env vars are needed (the site
+  URL is fixed in the code). After `next build`, `scripts/write-cf-routing.mjs` writes
+  `out/_redirects` (`/use-<hook>.md` → `/md/use-<hook>` as 200 rewrites, one per hook, which
+  replace the old `rewrites()`) and appends to `out/_headers` the content types, noindex and
+  canonical links, and CORS that the route handlers used to send. Static rules are in
+  `public/_headers`.
+- **Deploy** (from the laptop, never from inside the repo: wrangler detects Next.js and rewrites
+  the project for OpenNext):
 
-## Learn More
+  ```bash
+  D=/tmp/claude-1000/-home-daniyal-Grayphite-Projects-Danixsoft-Products/d595a722-ccc5-457f-90cc-cee32207a859/scratchpad/cfdeploy/react-hooks
+  rm -rf "$D/out" && cp -r apps/docs/out "$D/out"
+  cd "$D"
+  set -a; . "/home/daniyal/Grayphite Projects/Danixsoft Products/danixsoft-db/.env.local"; set +a
+  export CLOUDFLARE_API_TOKEN=$CLOUDEFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID=$CLOUDEFLARE_ACCOUNT_ID
+  npx -y wrangler@4 deploy
+  ```
 
-To learn more about Next.js, take a look at the following resources:
+  The deploy folder holds only `out/` and this `wrangler.jsonc` (no secrets). If the scratchpad
+  is gone, recreate it:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+  ```jsonc
+  {"name":"react-hooks-danixsoft","compatibility_date":"2026-10-01","assets":{"directory":"./out","not_found_handling":"404-page","html_handling":"auto-trailing-slash"}}
+  ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+  Deploys are atomic. Roll back with `npx -y wrangler@4 rollback` from the deploy folder. Pushing
+  `main` runs CI only (`.github/workflows/ci.yml`: library checks and a docs build); nothing
+  deploys automatically. `release.yml` (npm publishing) is skipped until the repo variable `RELEASE_ENABLED` is `true`.
+- **Scheduled jobs:** none.
+- **Limits (free plan):** 20,000 files per deploy. Static-asset requests are free and don't count
+  against the Workers limit (100k Worker requests a day applies only to Worker code).
+- **SEO/GEO:** `llms.txt` / `llms-full.txt`, AI-crawler rules in `robots.ts`, an About page and
+  answer guides, IndexNow key in `public/`. Run `npm run indexnow --workspace=docs` after each
+  deploy. Owner steps: `setup-guides/seo-geo-checklist.md`.

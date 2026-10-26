@@ -11,6 +11,7 @@ const resources = [
   { title: 'Comparisons', href: '/compare' },
   { title: 'API Reference', href: '/api-reference' },
   { title: 'FAQ', href: '/faq' },
+  { title: 'About', href: '/about' },
   { title: 'More from DanixSoft', href: '/more-from-danixsoft' },
 ];
 
@@ -21,6 +22,8 @@ const guides = [
   { title: 'localStorage in React', href: '/guides/react-localstorage-guide' },
   { title: 'Custom Hook Best Practices', href: '/guides/custom-react-hooks-best-practices' },
   { title: 'Fixing Stale Closures', href: '/guides/fixing-stale-closures-in-react' },
+  { title: 'Choosing a Hooks Library', href: '/guides/best-react-hooks-library-typescript' },
+  { title: 'Hooks in the App Router', href: '/guides/react-hooks-library-nextjs-app-router' },
 ];
 
 /**

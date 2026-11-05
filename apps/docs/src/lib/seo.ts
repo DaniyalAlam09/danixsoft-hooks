@@ -92,17 +92,41 @@ export function buildMetadata({
 }
 
 /**
- * Metadata for a /use-* hook page. Titles follow
- * "useDebounce — React hook for debouncing values | @danixsoft/hooks" so the
- * hook name and the problem it solves both lead the search result.
+ * Title for a /use-* hook page: "useSwipe React Hook: Example & Docs".
+ * People search the bare hook name ("useswipe", "uselocalstorage react"), so
+ * the name leads and the whole title stays under 60 characters.
+ */
+export const hookTitle = (name: string) => `${name} React Hook: Example & Docs`;
+
+/**
+ * Meta description for a hook page, kept within 155 characters: the hook's
+ * own one-line summary first, then what the page offers, dropping the tail
+ * sentences that would not fit.
+ */
+export function hookDescription(name: string, summary: string): string {
+  const parts = [
+    summary,
+    `Copy-paste ${name} example, API and FAQ.`,
+    'SSR-safe, zero dependencies, TypeScript.',
+  ];
+  let text = parts[0];
+  for (const part of parts.slice(1)) {
+    if (`${text} ${part}`.length <= 155) text = `${text} ${part}`;
+  }
+  return text;
+}
+
+/**
+ * Metadata for a /use-* hook page (title and description from the helpers
+ * above, both generated from the registry).
  */
 export function hookMetadata(slug: string): Metadata {
   const hook = getHook(slug);
   if (!hook) throw new Error(`No registry entry for hook "${slug}"`);
 
   return buildMetadata({
-    title: `${hook.name} — React hook for ${hook.purpose} | ${siteConfig.name}`,
-    description: `${hook.summary} SSR-safe, zero dependencies and fully typed. Install command, copy-paste example and API signature.`,
+    title: hookTitle(hook.name),
+    description: hookDescription(hook.name, hook.summary),
     path: `/${hook.slug}`,
     type: 'article',
     modifiedTime: hookLastModified(hook.slug, hook.name),

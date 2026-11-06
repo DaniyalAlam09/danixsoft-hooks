@@ -14,6 +14,7 @@ import {
   jsonLdGraph,
   techArticleSchema,
   faqSchema,
+  hookTitle,
 } from '@/lib/seo';
 import Breadcrumbs from '@/components/layout/breadcrumbs';
 import PageNav from '@/components/layout/page-nav';
@@ -116,6 +117,24 @@ export default function HookPage({
       question: `Is ${hook.name} safe to use with server-side rendering?`,
       answer: `Yes. ${ssrSummary}${hook.ssrNote ? ` ${hook.ssrNote}` : ''}`,
     },
+    ...(parsed
+      ? [
+          {
+            question: `What arguments does ${hook.name} take and what does it return?`,
+            answer: `${
+              parsed.params.length === 0
+                ? `${hook.name} takes no arguments.`
+                : `${hook.name} takes ${parsed.params
+                    .map((p) => `${p.name} (${p.type}${p.optional ? ', optional' : ''})`)
+                    .join(', ')}.`
+            } It returns ${parsed.returns === 'void' ? 'nothing (void)' : parsed.returns}. Full signature: ${hook.signature}`,
+          },
+        ]
+      : []),
+    {
+      question: `Can I use ${hook.name} without installing the package?`,
+      answer: `Yes. Run npx shadcn@latest add ${registryUrl(hook.slug)} to copy the ${hook.name} source into your project as a file you own, or copy it from the Source section on this page. It is MIT licensed.`,
+    },
     {
       question: `Does ${hook.name} have any dependencies?`,
       answer: `No. ${siteConfig.package} ships with zero runtime dependencies — ${hook.name} is built entirely on React primitives and standard browser APIs.`,
@@ -129,7 +148,7 @@ export default function HookPage({
       { name: hook.name, path },
     ]),
     techArticleSchema({
-      headline: `${hook.name} — React Hook`,
+      headline: hookTitle(hook.name),
       description: hook.description,
       path,
       datePublished: '2025-01-15',
@@ -171,6 +190,7 @@ export default function HookPage({
 
             <h1 className="mb-3 font-mono text-3xl font-bold tracking-tight text-fg sm:text-4xl">
               {hook.name}
+              <span className="font-sans font-semibold text-fg-muted"> React hook</span>
             </h1>
             {/* One-sentence answer first: it is what search snippets and
                 answer engines quote. */}
